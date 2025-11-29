@@ -1,0 +1,4 @@
+
+pub fn something_helpful(a: N32, b: N32) -> N32 {
+  a + b
+}

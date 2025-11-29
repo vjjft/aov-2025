@@ -1,0 +1,5 @@
+
+[language-server.vine]
+command = "vine"
+args = ["lsp", "util/util.vi", "day_??/day_??.vi"]
+

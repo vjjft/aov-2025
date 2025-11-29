@@ -1,0 +1,12 @@
+
+// use #util::{...};
+
+pub fn main(&io: &IO) {
+  let input = io.full_input();
+
+  let part1 = 0;
+  io.println("Part 1: {part1}");
+
+  let part2 = 0;
+  io.println("Part 2: {part2}");
+}
