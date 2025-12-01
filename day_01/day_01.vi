@@ -1,14 +1,11 @@
 
-// use #util::{...};
 
 pub fn main(&io: &IO) {
   let input = io.full_input();
 
-  // io.println(input);
-
   let turn_ = input.split("\n");
 
-  { turns: turn_.len() }.dbg();
+  // { turns: turn_.len() }.dbg();
 
   let delta_ = turn_.map(fn* (turn: String) {
     let Some(dir, num) = turn!.head_tail() else { +0 };
@@ -19,8 +16,6 @@ pub fn main(&io: &IO) {
       +n
     }
   });
-
-  // { delta_ }.dbg();
 
   let position = 50;
   let running = position;
@@ -51,7 +46,7 @@ pub fn main(&io: &IO) {
     if (position == 0) {
       hits += 1;
     }
-    (start, delta, spins, temp, position, (hits, passes)).dbg();
+    // (start, delta, spins, temp, position, (hits, passes)).dbg();
   };
 
   let part1 = hits;
