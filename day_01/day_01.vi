@@ -26,33 +26,35 @@ pub fn main(&io: &IO) {
       }
     };
 
+    let fn* passes_inc() {
+      if (start != 0) {
+        passes += 1;
+      }
+    }
+
     let poss_pass = false;
     when {
       temp < +0 {
-        poss_pass = true;
+        passes_inc()
         position = (temp + +100) as N32;
       }
       temp > +100 {
-        poss_pass = true;
+        passes_inc()
         position = (temp - +100) as N32;
       }
       temp == +0 {
-        poss_pass = true;
+        passes_inc()
         hits += 1;
         position = temp as N32;
       }
       temp == +100 {
-        poss_pass = true;
+        passes_inc()
         hits += 1;
         position = (temp - +100) as N32;
       }
       _ {
         position = temp as N32;
       }
-    }
-
-    if poss_pass and start != 0 {
-      passes += 1
     }
 
     // (start, turn, spins, temp, position, (hits, passes)).dbg();
