@@ -16,10 +16,9 @@ pub fn main(&io: &IO) {
     assert turn!.head_tail() is Some(dir, num) else { debug::error("bad input") }
     assert N32::parse(String(num)) is Some(n) else { debug::error("bad input") }
 
-    let delta = if dir == 'L' {
-      -n
-    } else {
-      +n
+    let delta = when {
+      dir == 'L' { -n }
+      _ { +n }
     };
 
     let spins = delta.abs() as N32 / 100;
