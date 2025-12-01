@@ -23,12 +23,11 @@ pub fn main(&io: &IO) {
     temp += delta % +100;
 
     if start != 0 {
-      if temp <= +0 {
-        passes += 1
-      }
-
-      if temp >= +100 {
-        passes += 1;
+      when {
+        temp <= +0 { passes += 1 }
+        temp >= +100 {
+          passes += 1;
+        }
       }
     }
 
