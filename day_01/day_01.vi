@@ -8,8 +8,9 @@ pub fn main(&io: &IO) {
   // { turns: turn_.len() }.dbg();
 
   let delta_ = turn_.map(fn* (turn: String) {
-    let Some(dir, num) = turn!.head_tail() else { +0 };
-    let Some(n) = N32::parse(String(num)) else { +0 };
+    assert turn!.head_tail() is Some(dir, num) else { +0 }
+    assert N32::parse(String(num)) is Some(n) else { +0 }
+
     if dir == 'L' {
       -n
     } else {
