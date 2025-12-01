@@ -34,6 +34,9 @@ pub fn main(&io: &IO) {
         temp >= +100 {
           passes += 1;
         }
+        _ {
+          continue;
+        }
       }
     }
 
