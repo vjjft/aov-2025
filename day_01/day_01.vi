@@ -9,34 +9,53 @@ pub fn main(&io: &IO) {
     assert turn!.head_tail() is Some(dir, num) else { debug::error("bad input") }
     assert N32::parse(String(num)) is Some(n) else { debug::error("bad input") }
 
-    let delta = when {
-      dir == 'L' { -n }
-      _ { +n }
-    };
-
     let spins = n / 100;
+    let net = n % 100;
+
     passes += spins;
 
     let start = position;
     let temp = position as I32;
 
-    temp += delta % +100;
+    when {
+      dir == 'R' {
+        temp += +net;
+      }
+      _ {
+        temp -= +net;
+      }
+    };
 
-    if start != 0 {
-      when {
-        temp <= +0 { passes += 1 }
-        temp >= +100 {
-          passes += 1;
-        }
+    let poss_pass = false;
+    when {
+      temp < +0 {
+        poss_pass = true;
+        position = (temp + +100) as N32;
+      }
+      temp > +100 {
+        poss_pass = true;
+        position = (temp - +100) as N32;
+      }
+      temp == +0 {
+        poss_pass = true;
+        hits += 1;
+        position = temp as N32;
+      }
+      temp == +100 {
+        poss_pass = true;
+        hits += 1;
+        position = (temp - +100) as N32;
+      }
+      _ {
+        position = temp as N32;
       }
     }
 
-    position = ((temp + +100) % +100) as N32;
-
-    if (position == 0) {
-      hits += 1;
+    if poss_pass and start != 0 {
+      passes += 1
     }
-    // (start, delta, spins, temp, position, (hits, passes)).dbg();
+
+    // (start, turn, spins, temp, position, (hits, passes)).dbg();
   };
 
   let part1 = hits;
