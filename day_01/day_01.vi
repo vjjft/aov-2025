@@ -26,7 +26,7 @@ pub fn main(&io: &IO) {
       }
     };
 
-    let fn* passes_inc() {
+    let fn* pass_check() {
       if (start != 0) {
         passes += 1;
       }
@@ -34,26 +34,27 @@ pub fn main(&io: &IO) {
 
     let poss_pass = false;
     when {
-      temp < +0 {
-        passes_inc()
-        position = (temp + +100) as N32;
-      }
-      temp > +100 {
-        passes_inc()
-        position = (temp - +100) as N32;
-      }
-      temp == +0 {
-        passes_inc()
-        hits += 1;
-        position = temp as N32;
-      }
-      temp == +100 {
-        passes_inc()
-        hits += 1;
-        position = (temp - +100) as N32;
+      +0 <= temp {
+        when {
+          temp < +100 {
+            position = temp as N32;
+            if (temp == +0) {
+              pass_check();
+              hits += 1;
+            }
+          }
+          _ {
+            position = (temp - +100) as N32;
+            pass_check();
+            if temp == +100 {
+              hits += 1;
+            }
+          }
+        }
       }
       _ {
-        position = temp as N32;
+        pass_check();
+        position = (temp + +100) as N32;
       }
     }
 
