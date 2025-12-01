@@ -9,18 +9,22 @@ pub fn main(&io: &IO) {
     assert turn!.head_tail() is Some(dir, num) else { debug::error("bad input") }
     assert N32::parse(String(num)) is Some(n) else { debug::error("bad input") }
 
-    let delta = when {
-      dir == 'L' { -n }
-      _ { +n }
-    };
-
     let spins = n / 100;
+    let net = n % 100;
+
     passes += spins;
 
     let start = position;
     let temp = position as I32;
 
-    temp += delta % +100;
+    when {
+      dir == 'R' {
+        temp += +net;
+      }
+      _ {
+        temp -= +net;
+      }
+    };
 
     if start != 0 {
       when {
@@ -36,7 +40,8 @@ pub fn main(&io: &IO) {
     if (position == 0) {
       hits += 1;
     }
-    // (start, delta, spins, temp, position, (hits, passes)).dbg();
+
+    // (start, turn, spins, temp, position, (hits, passes)).dbg();
   };
 
   let part1 = hits;
