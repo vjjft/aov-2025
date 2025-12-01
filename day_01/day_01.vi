@@ -21,7 +21,7 @@ pub fn main(&io: &IO) {
       _ { +n }
     };
 
-    let spins = delta.abs() as N32 / 100;
+    let spins = n / 100;
     passes += spins;
 
     let start = position;
