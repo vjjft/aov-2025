@@ -1,11 +1,16 @@
 
 pub fn main(&io: &IO) {
+  let ~out: String;
+
+  let &input = &io;
+  io.println(~out)
+
   let position = 50;
   let running = position;
   let hits = 0;
   let passes = 0;
 
-  while io.read_line() is Some(turn) {
+  while input.read_line() is Some(turn) {
     assert turn!.head_tail() is Some(dir, num) else { debug::error("bad input") }
     assert N32::parse(String(num)) is Some(n) else { debug::error("bad input") }
 
@@ -44,9 +49,5 @@ pub fn main(&io: &IO) {
     // (start, turn, spins, temp, position, (hits, passes)).dbg();
   };
 
-  let part1 = hits;
-  io.println("Part 1: {part1}");
-
-  let part2 = passes;
-  io.println("Part 2: {part2}");
+  ~out = "P1: {hits}\nP2: {passes}";
 }
