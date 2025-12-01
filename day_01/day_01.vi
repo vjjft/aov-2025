@@ -1,18 +1,11 @@
 
-
 pub fn main(&io: &IO) {
-  let input = io.full_input();
-
-  let turn_ = input.split("\n");
-
-  // { turns: turn_.len() }.dbg();
-
   let position = 50;
   let running = position;
   let hits = 0;
   let passes = 0;
 
-  for turn in turn_.iter() {
+  while io.read_line() is Some(turn) {
     assert turn!.head_tail() is Some(dir, num) else { debug::error("bad input") }
     assert N32::parse(String(num)) is Some(n) else { debug::error("bad input") }
 
