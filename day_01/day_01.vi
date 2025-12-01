@@ -26,6 +26,8 @@ pub fn main(&io: &IO) {
       }
     };
 
+    position = ((temp + +100) % +100) as N32;
+
     if start != 0 {
       when {
         temp <= +0 { passes += 1 }
@@ -35,9 +37,7 @@ pub fn main(&io: &IO) {
       }
     }
 
-    position = ((temp + +100) % +100) as N32;
-
-    if (position == 0) {
+    if position == 0 {
       hits += 1;
     }
 
