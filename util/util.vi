@@ -2,3 +2,7 @@
 pub fn .log(&io: &IO, msg: String) {
   io.println(msg);
 }
+
+pub fn .is_even(n: N32) -> Bool {
+  0 == n % 2
+}
