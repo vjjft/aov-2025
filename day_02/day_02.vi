@@ -1,7 +1,8 @@
 
-// use #util::{...};
+use #util::log;
 
 use #root::debug::log as dbg;
+use #root::IO::println as out;
 
 pub fn main(&io: &IO) {
   assert io.read_line() is Some(input) else { debug::error("bad input") }
@@ -23,11 +24,19 @@ pub fn main(&io: &IO) {
     }
     // dbg("end:   {end}");
 
+    // io.log("range: {(start, end).show()}");
     range_.push_back((start, end));
     input = rest;
+
+    assert N32::parse(start) is Some(from) else { debug::error("failed to parse start: {start}") }
+    assert N32::parse(end) is Some(to) else { debug::error("failed to parse end: {end}") }
+
+    io.log("range: {(from, to).show()}");
   }
 
-  debug::log(range_.show());
+  // dbg(range_.show());
+
+  io.println("");
 
   let part1 = 0;
   io.println("Part 1: {part1}");
