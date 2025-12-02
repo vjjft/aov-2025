@@ -1,8 +1,33 @@
 
 // use #util::{...};
 
+use #root::debug::log as dbg;
+
 pub fn main(&io: &IO) {
-  let input = io.full_input();
+  assert io.read_line() is Some(input) else { debug::error("bad input") }
+  input ++= ","
+
+  let range_: List[(String, String)] = [];
+
+  while input.len() > 1 {
+    // dbg(input);
+
+    let rest = input;
+    assert rest.split_once("-") is (start, Some(rest)) else {
+      debug::error("failed to parse {input}")
+    }
+    // dbg("start: {start}");
+
+    assert rest.split_once(",") is (end, Some(rest)) else {
+      debug::error("failed to parse {input}")
+    }
+    // dbg("end:   {end}");
+
+    range_.push_back((start, end));
+    input = rest;
+  }
+
+  debug::log(range_.show());
 
   let part1 = 0;
   io.println("Part 1: {part1}");
