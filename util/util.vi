@@ -38,3 +38,22 @@ pub mod n64 {
     n.order() % 2 == 1
   }
 }
+
+pub mod string {
+  pub fn .chunk(s: String, n: N32, whole: Bool) -> (List[String], Bool) {
+    assert n > 0 else { debug::error("Chunk size must be non-zero") }
+    let out: List[String] = [];
+    let even: Bool;
+    while s.len() is len and len >= n {
+      let (head, rest) = s.split_at(n);
+      out.push_back(head);
+      s = rest
+    } else {
+      even = s.len() == 0
+      if (!even & !whole) {
+        out.push_back(s)
+      } else {}
+    }
+    return (out, even);
+  }
+}
