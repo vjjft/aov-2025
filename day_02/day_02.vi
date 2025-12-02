@@ -1,5 +1,5 @@
 
-use #util::{log, n64::{has_even_places, is_even, order, places}};
+use #util::{list::is_constant, log, n64::{has_even_places, is_even, order, places}, string::chunk};
 
 use #root::debug::log as dbg;
 use #root::IO::println as out;
@@ -73,19 +73,92 @@ pub fn main(&io: &IO) {
       do {
         let num = n as String;
 
-        let valid = false;
-        // io.println("{valid}: {num}");
-
-        if (!valid) {
-          return;
+        let fn* part2_add() {
+          part2 += n
         }
 
-        part1 += n;
+        let fn* part2_handle(valid: Bool) {
+          let show = true;
+          let show = valid;
+          if (show) {
+            io.println("{valid}: {num}");
+          }
+          if (valid) {
+            part2_add()
+          }
+        }
+        let fn* part2_check_sub(num: String, c: N32) -> Bool {
+          // assert num.chunk(c, true) is (chunk_, even) and even else { debug::error("") }
+          if (n == 1010[N64]) {
+            io.println("c:{c}")
+          }
+          assert num.chunk(c, true) is (chunk_, _) else { debug::error("") }
+
+          if (n == 1010[N64]) {
+            io.println(chunk_.show() as String)
+          }
+          let valid = chunk_.is_constant() is Ok(_);
+          if (valid) {
+            part2_handle(valid);
+          }
+          valid
+        }
+        let p = num.len();
+
+        if (n == 1010[N64]) {
+          io.println("p:{p}")
+        }
+
+        when {
+          p == 10 {
+            if part2_check_sub(num, 5) {
+              return;
+            }
+            if part2_check_sub(num, 2) {
+              return;
+            }
+          }
+          p == 9 {
+            if part2_check_sub(num, 3) {
+              return;
+            }
+          }
+          p == 8 {
+            if part2_check_sub(num, 4) {
+              return;
+            }
+            if part2_check_sub(num, 2) {
+              return;
+            }
+          }
+          p == 6 {
+            if part2_check_sub(num, 3) {
+              return;
+            }
+            if part2_check_sub(num, 2) {
+              return;
+            }
+          }
+          p == 4 {
+            if part2_check_sub(num, 2) {
+              return;
+            }
+          }
+          p == 1 {
+            part2_handle(false);
+            return;
+          }
+        }
+        if part2_check_sub(num, 1) {
+          return;
+        }
+        part2_handle(false);
       }
     }
 
     for n in from..(to + 1) {
       // exec_part1(n);
+      exec_part2(n);
     }
   }
 
