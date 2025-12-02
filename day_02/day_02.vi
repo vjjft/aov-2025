@@ -35,9 +35,9 @@ pub fn main(&io: &IO) {
     io.log("range: {(from, to).show()}");
 
     io.println((from.places(), to.places()).show() as String)
-    let skip_invalid_ranges = true;
-    let skip_invalid_ranges = false;
-    if (skip_invalid_ranges) {
+    let skip_part1_invalid_ranges = true;
+    let skip_part1_invalid_ranges = false;
+    if (skip_part1_invalid_ranges) {
       if from.order() == to.order() and !from.has_even_places() {
         io.log("skip");
         continue;
@@ -45,25 +45,31 @@ pub fn main(&io: &IO) {
     }
     // continue;
 
+    let fn* exec_part1(n: N64) -> () {
+      do {
+        if !n.has_even_places() {
+          return;
+        }
+
+        let num = n as String;
+        let half_places = n.places() / 2;
+
+        assert num.split_at(half_places) is (sub_a, sub_b) and sub_a == sub_b is valid else {
+          return;
+        }
+
+        // io.println("{valid}: {num}");
+
+        if (!valid) {
+          return;
+        }
+
+        part1 += n;
+      }
+    }
+
     for n in from..(to + 1) {
-      if !n.has_even_places() {
-        continue;
-      }
-
-      let num = n as String;
-      let half_places = n.places() / 2;
-
-      assert num.split_at(half_places) is (sub_a, sub_b) and sub_a == sub_b is valid else {
-        continue;
-      }
-
-      io.println("{valid}: {num}");
-
-      if (!valid) {
-        continue;
-      }
-
-      part1 += n;
+      exec_part1(n);
     }
   }
 
