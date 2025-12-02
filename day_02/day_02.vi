@@ -10,6 +10,8 @@ pub fn main(&io: &IO) {
 
   let range_: List[(String, String)] = [];
 
+  let part1 = 0;
+
   while input.len() > 1 {
     // dbg(input);
 
@@ -32,20 +34,35 @@ pub fn main(&io: &IO) {
 
     io.log("range: {(from, to).show()}");
 
+    fn .has_even_digits(n: N32) -> Bool {
+      !n.log(10).is_even()
+    }
+
+    fn .digits(n: N32) -> N32 {
+      n.log(10) + 1
+    }
+
     let skip_invalid_ranges = true;
     if (skip_invalid_ranges) {
-      let from_digits = 1 + from.log(10);
-      let to_digits = 1 + to.log(10);
-      // io.log("log: {(from_digits, to_digits).show()}");
-
-      if !from_digits.is_even() and !to_digits.is_even() {
+      if !from.has_even_digits() and !to.has_even_digits() {
         io.log("skip");
         continue;
       }
     }
 
-    for i in from..(to + 1) {
-      io.log("{i}");
+    for n in from..(to + 1) {
+      if !n.has_even_digits() {
+        continue;
+      }
+
+      let num = n as String;
+      let half_digits = n.digits() / 2;
+
+      assert num.split_at(half_digits) is (sub_a, sub_b) and sub_a == sub_b else {
+        continue;
+      }
+
+      part1 += n;
     }
   }
 
@@ -53,7 +70,6 @@ pub fn main(&io: &IO) {
 
   io.println("");
 
-  let part1 = 0;
   io.println("Part 1: {part1}");
 
   let part2 = 0;
