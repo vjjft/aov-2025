@@ -3,6 +3,38 @@ pub fn .log(&io: &IO, msg: String) {
   io.println(msg);
 }
 
-pub fn .is_even(n: N32) -> Bool {
-  0 == n % 2
+pub mod n32 {
+  pub fn .is_even(n: N32) -> Bool {
+    0 == n % 2
+  }
+
+  pub fn .order(n: N32) -> N32 {
+    n.log(10)
+  }
+
+  pub fn .places(n: N32) -> N32 {
+    n.order() + 1
+  }
+
+  pub fn .has_even_places(n: N32) -> Bool {
+    n.order() % 2 == 1
+  }
+}
+
+pub mod n64 {
+  pub fn .is_even(n: N64) -> Bool {
+    0 == n % 2
+  }
+
+  pub fn .order(n: N64) -> N32 {
+    n.log_n32(10)
+  }
+
+  pub fn .places(n: N64) -> N32 {
+    n.order() + 1
+  }
+
+  pub fn .has_even_places(n: N64) -> Bool {
+    n.order() % 2 == 1
+  }
 }
