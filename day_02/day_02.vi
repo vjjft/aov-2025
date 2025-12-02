@@ -49,6 +49,8 @@ pub fn main(&io: &IO) {
         continue;
       }
     }
+    io.println((from.digits(), to.digits()).show() as String)
+    // continue;
 
     for n in from..(to + 1) {
       if !n.has_even_digits() {
