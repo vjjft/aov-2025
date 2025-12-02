@@ -57,3 +57,19 @@ pub mod string {
     return (out, even);
   }
 }
+
+pub mod list {
+  use #root::ops::{Cast, comparison::Eq};
+
+  pub fn .is_constant[T+; Eq[T]](&list: &List[T]) -> Result[Option[T], T] {
+    let ref_ = list.iter_ref();
+    assert ref_.advance() is Some(&value, ref_) else { Ok(None()) }
+    for &val in ref_ {
+      if val != value {
+        return Err(val.fork());
+      }
+    } else {
+      Ok(Some(value))
+    }
+  }
+}
