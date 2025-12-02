@@ -69,7 +69,7 @@ pub fn main(&io: &IO) {
     }
 
     for n in from..(to + 1) {
-      exec_part1(n);
+      // exec_part1(n);
     }
   }
 
