@@ -10,8 +10,7 @@ pub fn main(&io: &IO) {
     num__.push_back(num_)
   }
 
-  io.log(("num__", num__))
-  for num_ in num__.iter() {
+  let fn* part1_process(num_: List[N32]) {
     assert (num_.pop_front(), num_.pop_front()) is (Some(a), Some(b)) else {}
 
     while num_.pop_front() is Some(c) {
@@ -29,6 +28,11 @@ pub fn main(&io: &IO) {
 
     let joltage = a * 10 + b;
     part1 += joltage;
+  }
+
+  io.log(("num__", num__))
+  for num_ in num__.iter() {
+    part1_process(num_)
   }
 
   io.println("Part 1: {part1}");
