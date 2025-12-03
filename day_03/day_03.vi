@@ -26,7 +26,7 @@ pub fn main(&io: &IO) {
         }
       }
     }
-    io.log((a, b));
+    // io.log((a, b));
 
     let joltage = a * 10 + b;
     part1 += joltage;
@@ -70,12 +70,12 @@ pub fn main(&io: &IO) {
     let joltage_string: String = char_ as String;
     // io.log(joltage_string)
     assert N64::parse(joltage_string) is Some(joltage) else { debug::error("") }
-    io.log(joltage)
+    // io.log(joltage)
 
     part2 += joltage;
   }
 
-  io.log(("num__", num__))
+  // io.log(("num__", num__))
   for num_ in num__.iter() {
     part1_process(num_)
     part2_process(num_)
