@@ -1,9 +1,10 @@
 
 use #util::io::{ln, log};
+use #util::n32::digit_char;
 
 pub fn main(&io: &IO) {
-  let part1 = 0;
-  let part2 = 0;
+  let part1 = 0[N64];
+  let part2 = 0[N64];
 
   let num__: List[List[N32]] = [];
   while io.read_line() is Some(line) {
@@ -32,28 +33,51 @@ pub fn main(&io: &IO) {
   }
 
   let fn* part2_process(num_: List[N32]) {
-    assert (num_.pop_front(), num_.pop_front()) is (Some(a), Some(b)) else {}
+    assert num_.split_at(12) is (active, rest) else {}
 
-    while num_.pop_front() is Some(c) {
-      when {
-        a < b {
-          a = b;
-          b = c;
+    // io.log({ active, rest })
+
+    while rest.pop_front() is Some(x) {
+      assert active.pop_front() is Some(a) else { debug::error("") }
+
+      // io.ln();
+      // io.log({ x })
+      let temp_active = active ++ [x];
+      let new_active = List::empty[N32];
+      while temp_active.pop_front() is Some(b) {
+        // io.log([new_active, [a], [b], temp_active, [x]])
+        when {
+          a >= b {
+            new_active ++= [a];
+            a = b
+          }
+          _ {
+            new_active ++= [b] ++ temp_active;
+            break;
+          }
         }
-        b < c {
-          b = c;
-        }
+      } else {
+        // new_active ++= [a]
       }
+      active = new_active
+      // io.log({ active, len: active.len() });
+      assert active.len() == 12 else { debug::error("bad active length") }
+      // io.ln();
     }
-    io.log((a, b));
 
-    let joltage = a * 10 + b;
+    let char_ = active.map(digit_char);
+    // io.log(char_)
+    let joltage_string: String = char_ as String;
+    // io.log(joltage_string)
+    assert N64::parse(joltage_string) is Some(joltage) else { debug::error("") }
+    io.log(joltage)
+
     part2 += joltage;
   }
 
   io.log(("num__", num__))
   for num_ in num__.iter() {
-    part1_process(num_)
+    // part1_process(num_)
     part2_process(num_)
   }
 

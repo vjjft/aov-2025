@@ -26,6 +26,13 @@ pub mod n32 {
   pub fn .has_even_places(n: N32) -> Bool {
     n.order() % 2 == 1
   }
+
+  pub fn .digit_char(n: N32) -> Char {
+    when {
+      n > 9 { debug::error("{n} is not a digit") }
+      _ { (n + 48) as Char }
+    }
+  }
 }
 
 pub mod n64 {
