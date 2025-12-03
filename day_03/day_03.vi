@@ -1,10 +1,36 @@
 
-// use #util::{...};
+use #util::io::{ln, log};
 
 pub fn main(&io: &IO) {
-  let input = io.full_input();
-
   let part1 = 0;
+
+  let num__: List[List[N32]] = [];
+  while io.read_line() is Some(line) {
+    let num_ = line!.map(fn* (c: Char) { N32::parse(c as String).assume() });
+    num__.push_back(num_)
+  }
+
+  io.log(("num__", num__))
+  for num_ in num__.iter() {
+    assert (num_.pop_front(), num_.pop_front()) is (Some(a), Some(b)) else {}
+
+    while num_.pop_front() is Some(c) {
+      when {
+        a < b {
+          a = b;
+          b = c;
+        }
+        b < c {
+          b = c;
+        }
+      }
+    }
+    io.log((a, b));
+
+    let joltage = a * 10 + b;
+    part1 += joltage;
+  }
+
   io.println("Part 1: {part1}");
 
   let part2 = 0;
