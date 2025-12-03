@@ -77,7 +77,7 @@ pub fn main(&io: &IO) {
 
   io.log(("num__", num__))
   for num_ in num__.iter() {
-    // part1_process(num_)
+    part1_process(num_)
     part2_process(num_)
   }
 
