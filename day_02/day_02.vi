@@ -33,14 +33,14 @@ pub fn main(&io: &IO) {
     assert N64::parse(start) is Some(from) else { debug::error("failed to parse start: {start}") }
     assert N64::parse(end) is Some(to) else { debug::error("failed to parse end: {end}") }
 
-    io.log("range: {(from, to).show()}");
+    // io.log("range: {(from, to).show()}");
 
-    io.println((from.places(), to.places()).show() as String)
+    // io.println((from.places(), to.places()).show() as String)
     let skip_part1_invalid_ranges = true;
     let skip_part1_invalid_ranges = false;
     if (skip_part1_invalid_ranges) {
       if from.order() == to.order() and !from.has_even_places() {
-        io.log("skip");
+        // io.log("skip");
         continue;
       }
     }
@@ -81,7 +81,7 @@ pub fn main(&io: &IO) {
           let show = true;
           let show = valid;
           if (show) {
-            io.println("{valid}: {num}");
+            // io.println("{valid}: {num}");
           }
           if (valid) {
             part2_add()
