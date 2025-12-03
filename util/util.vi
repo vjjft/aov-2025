@@ -1,4 +1,75 @@
 
-pub fn something_helpful(a: N32, b: N32) -> N32 {
-  a + b
+pub fn .log(&io: &IO, msg: String) {
+  io.println(msg);
+}
+
+pub mod n32 {
+  pub fn .is_even(n: N32) -> Bool {
+    0 == n % 2
+  }
+
+  pub fn .order(n: N32) -> N32 {
+    n.log(10)
+  }
+
+  pub fn .places(n: N32) -> N32 {
+    n.order() + 1
+  }
+
+  pub fn .has_even_places(n: N32) -> Bool {
+    n.order() % 2 == 1
+  }
+}
+
+pub mod n64 {
+  pub fn .is_even(n: N64) -> Bool {
+    0 == n % 2
+  }
+
+  pub fn .order(n: N64) -> N32 {
+    n.log_n32(10)
+  }
+
+  pub fn .places(n: N64) -> N32 {
+    n.order() + 1
+  }
+
+  pub fn .has_even_places(n: N64) -> Bool {
+    n.order() % 2 == 1
+  }
+}
+
+pub mod string {
+  pub fn .chunk(s: String, n: N32, whole: Bool) -> (List[String], Bool) {
+    assert n > 0 else { debug::error("Chunk size must be non-zero") }
+    let out: List[String] = [];
+    let even: Bool;
+    while s.len() is len and len >= n {
+      let (head, rest) = s.split_at(n);
+      out.push_back(head);
+      s = rest
+    } else {
+      even = s.len() == 0
+      if (!even & !whole) {
+        out.push_back(s)
+      } else {}
+    }
+    return (out, even);
+  }
+}
+
+pub mod list {
+  use #root::ops::{Cast, comparison::Eq};
+
+  pub fn .is_constant[T+; Eq[T]](&list: &List[T]) -> Result[Option[T], T] {
+    let ref_ = list.iter_ref();
+    assert ref_.advance() is Some(&value, ref_) else { Ok(None()) }
+    for &val in ref_ {
+      if val != value {
+        return Err(val.fork());
+      }
+    } else {
+      Ok(Some(value))
+    }
+  }
 }
