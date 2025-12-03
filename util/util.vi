@@ -1,6 +1,13 @@
 
-pub fn .log(&io: &IO, msg: String) {
-  io.println(msg);
+use #root::debug::Show;
+
+pub mod io {
+  pub fn .log[T?; Show[T]](&io: &IO, item: T) {
+    io.println(item.show() as String)
+  }
+  pub fn .ln(&io: &IO) {
+    io.print_char('\n')
+  }
 }
 
 pub mod n32 {
