@@ -1,18 +1,19 @@
 
 use #util::io::{log, out};
+use #root::ops::Cast;
 
 pub fn main(&io: &IO) {
   let part1 = 0[N64];
   let part2 = 0[N64];
 
-  let floor: Floor = [];
+  let floor = Floor([]);
   while io.read_line() is Some(line) {
     let row = line!.map(fn* (c: Char) { c == '@' });
-    floor.push_back(row)
+    floor!.push_back(row)
   }
 
   // io.log(floor);
-  io.out(Floor::to_string(floor));
+  io.out(floor as String);
 
   io.println("Part 1: {part1}");
   io.println("Part 2: {part2}");
@@ -29,16 +30,23 @@ mod Roll {
   }
 }
 
-type Floor = List[List[Roll]];
+struct Floor(List[List[Roll]]);
 mod Floor {
-  pub fn .to_string(floor: Floor) -> String {
-    let str = "";
-    for row in floor.iter() {
-      for roll in row.iter() {
-        str!.push_back(Roll::to_char(roll));
-      }
-      str!.push_back('\n');
+  pub impl test: Cast[List[List[Roll]], Floor] {
+    fn cast(x: List[List[Roll]]) -> Floor {
+      Floor(x)
     }
-    str
+  }
+  pub impl to_string: Cast[Floor, String] {
+    fn cast(floor: Floor) -> String {
+      let str = "";
+      for row in floor!.iter() {
+        for roll in row.iter() {
+          str!.push_back(Roll::to_char(roll));
+        }
+        str!.push_back('\n');
+      }
+      str
+    }
   }
 }
