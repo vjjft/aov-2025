@@ -91,15 +91,27 @@ pub mod list {
   }
 }
 
-pub struct Channel[M]((M, ~M));
+pub struct Channel[M]((Option[M], ~Option[M]));
 
-mod Channel {
-  pub fn .send[M](Channel[M](got, ~out), value: M) -> M {
-    out = value;
+pub mod Channel {
+  pub fn .send[M*](Channel[M](got, ~out), value: M) -> Option[M] {
+    out = Some(value);
     got
   }
 
-  pub fn .get[M+](&Channel[M](i, _)) -> M {
+  pub fn .get[M+](&Channel[M](i, _)) -> Option[M] {
     i
+  }
+  pub fn new_pair[M*]() -> (Channel[M], Channel[M]) {
+    let (a, b);
+    let (x, y) = (~a, ~b);
+    (Channel(a, y), Channel(b, x))
+  }
+  pub impl drop[M?]: Drop[Channel[M]] {
+    fn drop(c: Channel[M]) {
+      let Channel(i, ~o) = c;
+      i.drop();
+      o = None();
+    }
   }
 }
