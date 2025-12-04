@@ -6,11 +6,12 @@ def --wrapped main [day:int, --input (-i): path, ...extra] {
   if ($day_str | str length) == 1 {
     $day_str = $"0($day_str)"
   }
-  $day_str = $"day_($day_str)"
-  let input_path = $day_str | path join ($input | default input)
+  let $file_str = $"day_($day_str)"
+  let $dir_str = $"d($day_str)"
+  let input_path = $dir_str | path join ($input | default input)
   mut input = try { open $input_path } catch { "" }
   if $input == "" {
-    if $input_path == $"($day_str)/input" and $token != "" {
+    if $input_path == $"($dir_str)/input" and $token != "" {
       $input = http get $"https://adventofcode.com/2025/day/($day)/input" -H {COOKIE: $"session=($token)"}
       $input | save -f $input_path
     } else {
@@ -18,6 +19,6 @@ def --wrapped main [day:int, --input (-i): path, ...extra] {
       exit 1
     }
   }
-  $input | vine run $"($day_str)/($day_str).vi" --lib util/util.vi ...$extra
+  $input | vine run $"($dir_str)/($file_str).vi" --lib util/util.vi ...$extra
 }
 
