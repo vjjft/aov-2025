@@ -1,4 +1,5 @@
 
+use #util::Channel;
 use #util::io::{log, out};
 use #root::ops::Cast;
 
@@ -13,31 +14,57 @@ pub fn main(&io: &IO) {
   }
 
   // io.log(floor);
-  io.out(floor as String);
+  io.out(&floor as String);
 
   io.println("Part 1: {part1}");
   io.println("Part 2: {part2}");
 }
 
-struct* RollState(Bool);
-struct* Roll({ state: RollState });
+type OptChan[M] = Option[Channel[M]];
+struct? Neighborhood[M]({
+  n: OptChan[M],
+  s: OptChan[M],
+  e: OptChan[M],
+  w: OptChan[M],
+  ne: OptChan[M],
+  nw: OptChan[M],
+  se: OptChan[M],
+  sw: OptChan[M],
+});
+struct? RollState(Bool);
+type NH = Neighborhood[RollState];
+mod NH {
+  pub fn new() -> NH {
+    Neighborhood[RollState]({
+      n: None(),
+      s: None(),
+      e: None(),
+      w: None(),
+      ne: None(),
+      nw: None(),
+      se: None(),
+      sw: None(),
+    })
+  }
+}
+
+struct? Roll({ state: RollState, nh: Option[NH] });
 mod Roll {
   pub fn parse_char(c: Char) -> Option[Roll] {
-    Some(Roll({
-      state: RollState(when {
-        c == '@' { true }
-        c == '.' { false }
-        _ {
-          return None();
-        }
-      }),
-    }))
+    let state = RollState(when {
+      c == '@' { true }
+      c == '.' { false }
+      _ {
+        return None();
+      }
+    });
+    Some(Roll({ state, nh: None() }))
   }
   pub fn parse_char_assume(c: Char) -> Roll {
     parse_char(c).assume()
   }
-  pub impl to_char: Cast[Roll, Char] {
-    fn cast(roll: Roll) -> Char {
+  pub impl to_char: Cast[&Roll, Char] {
+    fn cast(&roll: &Roll) -> Char {
       if roll.state! == true {
         '@'
       } else {
@@ -47,14 +74,14 @@ mod Roll {
   }
 }
 
-struct* Floor(List[List[Roll]]);
+struct? Floor(List[List[Roll]]);
 mod Floor {
-  pub impl to_string: Cast[Floor, String] {
-    fn cast(floor: Floor) -> String {
+  pub impl to_string: Cast[&Floor, String] {
+    fn cast(&floor: &Floor) -> String {
       let str = "";
-      for row in floor!.iter() {
-        for roll in row.iter() {
-          str!.push_back(roll as Char);
+      for &row in floor!.iter_ref() {
+        for &roll in row.iter_ref() {
+          str!.push_back(&roll as Char);
         }
         str!.push_back('\n');
       }
