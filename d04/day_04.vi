@@ -1,10 +1,44 @@
 
-// use #util::{...};
+use #util::io::{log, out};
 
 pub fn main(&io: &IO) {
   let part1 = 0[N64];
   let part2 = 0[N64];
 
+  let floor: Floor = [];
+  while io.read_line() is Some(line) {
+    let row = line!.map(fn* (c: Char) { c == '@' });
+    floor.push_back(row)
+  }
+
+  // io.log(floor);
+  io.out(Floor::to_string(floor));
+
   io.println("Part 1: {part1}");
   io.println("Part 2: {part2}");
+}
+
+type Roll = Bool;
+mod Roll {
+  pub fn .to_char(roll: Roll) -> Char {
+    if roll == true {
+      '@'
+    } else {
+      '.'
+    }
+  }
+}
+
+type Floor = List[List[Roll]];
+mod Floor {
+  pub fn .to_string(floor: Floor) -> String {
+    let str = "";
+    for row in floor.iter() {
+      for roll in row.iter() {
+        str!.push_back(Roll::to_char(roll));
+      }
+      str!.push_back('\n');
+    }
+    str
+  }
 }
