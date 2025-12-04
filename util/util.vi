@@ -90,3 +90,16 @@ pub mod list {
     }
   }
 }
+
+pub struct Channel[M]((M, ~M));
+
+mod Channel {
+  pub fn .send[M](Channel[M](got, ~out), value: M) -> M {
+    out = value;
+    got
+  }
+
+  pub fn .get[M+](&Channel[M](i, _)) -> M {
+    i
+  }
+}
