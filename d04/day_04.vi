@@ -8,7 +8,7 @@ pub fn main(&io: &IO) {
 
   let floor = Floor([]);
   while io.read_line() is Some(line) {
-    let row = line!.map(fn* (c: Char) { c as Roll });
+    let row = line!.map(Roll::parse_char_assume);
     floor!.push_back(row)
   }
 
@@ -21,18 +21,17 @@ pub fn main(&io: &IO) {
 
 struct* Roll(Bool);
 mod Roll {
-  pub impl from_char: Cast[Char, Roll] {
-    fn cast(c: Char) -> Roll {
-      when {
-        c == '@' {
-          return Roll(true);
-        }
-        c == '.' {
-          return Roll(false);
-        }
-        _ { debug::error("'{c}' cannot be cast to Roll") }
+  pub fn parse_char(c: Char) -> Option[Roll] {
+    Some(Roll(when {
+      c == '@' { true }
+      c == '.' { false }
+      _ {
+        return None();
       }
-    }
+    }))
+  }
+  pub fn parse_char_assume(c: Char) -> Roll {
+    parse_char(c).assume()
   }
   pub impl to_char: Cast[Roll, Char] {
     fn cast(roll: Roll) -> Char {
