@@ -5,6 +5,9 @@ pub mod io {
   pub fn .log[T?; Show[T]](&io: &IO, item: T) {
     io.println(item.show() as String)
   }
+  pub fn .out(&io: &IO, str: String) {
+    io.println(str);
+  }
   pub fn .ln(&io: &IO) {
     io.print_char('\n')
   }
@@ -73,7 +76,7 @@ pub mod string {
 }
 
 pub mod list {
-  use #root::ops::{Cast, comparison::Eq};
+  use #root::ops::comparison::Eq;
 
   pub fn .is_constant[T+; Eq[T]](&list: &List[T]) -> Result[Option[T], T] {
     let ref_ = list.iter_ref();
