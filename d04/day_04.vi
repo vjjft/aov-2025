@@ -19,15 +19,18 @@ pub fn main(&io: &IO) {
   io.println("Part 2: {part2}");
 }
 
-struct* Roll(Bool);
+struct* RollState(Bool);
+struct* Roll({ state: RollState });
 mod Roll {
   pub fn parse_char(c: Char) -> Option[Roll] {
-    Some(Roll(when {
-      c == '@' { true }
-      c == '.' { false }
-      _ {
-        return None();
-      }
+    Some(Roll({
+      state: RollState(when {
+        c == '@' { true }
+        c == '.' { false }
+        _ {
+          return None();
+        }
+      }),
     }))
   }
   pub fn parse_char_assume(c: Char) -> Roll {
@@ -35,7 +38,7 @@ mod Roll {
   }
   pub impl to_char: Cast[Roll, Char] {
     fn cast(roll: Roll) -> Char {
-      if roll! == true {
+      if roll.state! == true {
         '@'
       } else {
         '.'
