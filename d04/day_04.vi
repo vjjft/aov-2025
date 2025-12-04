@@ -8,7 +8,7 @@ pub fn main(&io: &IO) {
 
   let floor = Floor([]);
   while io.read_line() is Some(line) {
-    let row = line!.map(fn* (c: Char) { c == '@' });
+    let row = line!.map(fn* (c: Char) { c as Roll });
     floor!.push_back(row)
   }
 
@@ -19,30 +19,40 @@ pub fn main(&io: &IO) {
   io.println("Part 2: {part2}");
 }
 
-type Roll = Bool;
+struct* Roll(Bool);
 mod Roll {
-  pub fn .to_char(roll: Roll) -> Char {
-    if roll == true {
-      '@'
-    } else {
-      '.'
+  pub impl from_char: Cast[Char, Roll] {
+    fn cast(c: Char) -> Roll {
+      when {
+        c == '@' {
+          return Roll(true);
+        }
+        c == '.' {
+          return Roll(false);
+        }
+        _ { debug::error("'{c}' cannot be cast to Roll") }
+      }
+    }
+  }
+  pub impl to_char: Cast[Roll, Char] {
+    fn cast(roll: Roll) -> Char {
+      if roll! == true {
+        '@'
+      } else {
+        '.'
+      }
     }
   }
 }
 
-struct Floor(List[List[Roll]]);
+struct* Floor(List[List[Roll]]);
 mod Floor {
-  pub impl test: Cast[List[List[Roll]], Floor] {
-    fn cast(x: List[List[Roll]]) -> Floor {
-      Floor(x)
-    }
-  }
   pub impl to_string: Cast[Floor, String] {
     fn cast(floor: Floor) -> String {
       let str = "";
       for row in floor!.iter() {
         for roll in row.iter() {
-          str!.push_back(Roll::to_char(roll));
+          str!.push_back(roll as Char);
         }
         str!.push_back('\n');
       }
