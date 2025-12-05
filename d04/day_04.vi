@@ -15,7 +15,8 @@ pub fn main(&io: &IO) {
 
   io.out(floor.show() as String)
   floor.notify()
-  io.out("can lift: {floor.count_can_lift()}")
+  io.out(floor.show() as String)
+  // io.out("can lift: {floor.count_can_lift()}")
 
   io.println("Part 1: {part1}");
   io.println("Part 2: {part2}");
@@ -216,21 +217,34 @@ mod Roll {
   // pub impl show: Show[Roll];
   pub impl show: Show[Roll] {
     fn show(&r: &Roll) -> Show {
-      let str = "";
-      str ++= "{r.nh.len()} - ";
-      for (dir, &s) in r.nh.iter() {
-        str ++= "{dir.show()}";
-        str ++= match (s.get()) {
-          None() { 'x' }
-          Some(r) {
-            if (r!) {
-              '#'
-            } else {
-              '.'
+      let fn nr_to_str(o: Option[&Chan]) -> String {
+        match (o) {
+          None() { "+" }
+          Some(&c) {
+            match (c.get()) {
+              None() { "x" }
+              Some(s) {
+                if (s!) {
+                  "#"
+                } else {
+                  "-"
+                }
+              }
             }
           }
-        } as String
+        }
       }
+
+      let str = "";
+      str ++= "{r.nh.len()}:\n";
+      let fn* dir_to_str(dir: Dir) -> String {
+        nr_to_str(r.nh.get(&dir))
+      }
+      str ++= "\n";
+      str ++= "{dir_to_str(Dir::NW())}{dir_to_str(Dir::N_())}{dir_to_str(Dir::NE())}\n";
+      str ++= "{dir_to_str(Dir::W_())}*{dir_to_str(Dir::E_())}\n";
+      str ++= "{dir_to_str(Dir::SW())}{dir_to_str(Dir::S_())}{dir_to_str(Dir::SE())}\n";
+      str ++= "\n";
       Show::Literal("state{r.state.show()} {str}")
     }
   }
@@ -251,9 +265,12 @@ mod Floor {
       let x_n_ = row_above.pop_front();
       let x_ne = row_above.get(0);
       if x_nw is Some(&x_nw) {
+        debug::dbg("here")
         let (a, b) = init_channel_pair();
+        debug::dbg(&x_nw);
         roll.nh.insert(Dir::NW(), a);
         x_nw.nh.insert(Dir::SE(), b);
+        debug::dbg(&x_nw);
       }
       if x_n_ is Some(&x_n_) {
         // (x_n_.nh.s, roll.nh.n) = init_channel_pair()
@@ -280,10 +297,15 @@ mod Floor {
     }
     while io.read_line() is Some(line) {
       let row = [];
+      debug::dbg("=================");
+      // debug::dbg(row_above);
       while line!.pop_front() is Some(c) {
         row ++= [init_roll(c)]
       }
       x_w_ = None();
+      debug::dbg("xxxxxxxxxxxxxxxxxxxxx");
+      // debug::dbg(row);
+      debug::dbg("xxxxxxxxxxxxxxxxxxxxx");
       row_above = row
       floor!.push_back(&row)
     }
