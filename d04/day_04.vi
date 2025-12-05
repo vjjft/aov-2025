@@ -92,6 +92,7 @@ mod Roll {
     count += check_n(roll.nh.nw) as N32;
     count += check_n(roll.nh.se) as N32;
     count += check_n(roll.nh.sw) as N32;
+    count.dbg()
     count
   }
 }
