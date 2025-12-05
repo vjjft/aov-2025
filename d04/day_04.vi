@@ -15,8 +15,17 @@ pub fn main(&io: &IO) {
 
   io.out(floor.show() as String)
   floor.notify()
+  floor.notify()
+  floor.notify()
+  floor.notify()
+  floor.notify()
+  floor.notify()
+  floor.notify()
+  floor.notify()
+  floor.notify()
+  floor.notify()
   io.out(floor.show() as String)
-  // io.out("can lift: {floor.count_can_lift()}")
+  io.out("can lift: {floor.count_can_lift()}")
 
   io.println("Part 1: {part1}");
   io.println("Part 2: {part2}");
@@ -235,17 +244,27 @@ mod Roll {
         }
       }
 
-      let str = "";
-      str ++= "{r.nh.len()}:\n";
+      let fn* roll_to_str() -> String {
+        if (r.state!) {
+          "@"
+        } else {
+          "."
+        }
+      }
+
       let fn* dir_to_str(dir: Dir) -> String {
         nr_to_str(r.nh.get(&dir))
       }
+
+      let str = "";
+      str ++= "{r.nh.len()}:\n";
       str ++= "\n";
       str ++= "{dir_to_str(Dir::NW())}{dir_to_str(Dir::N_())}{dir_to_str(Dir::NE())}\n";
-      str ++= "{dir_to_str(Dir::W_())}*{dir_to_str(Dir::E_())}\n";
+      str ++= "{dir_to_str(Dir::W_())}{roll_to_str()}{dir_to_str(Dir::E_())}\n";
       str ++= "{dir_to_str(Dir::SW())}{dir_to_str(Dir::S_())}{dir_to_str(Dir::SE())}\n";
       str ++= "\n";
-      Show::Literal("state{r.state.show()} {str}")
+
+      Show::Literal("{str}")
     }
   }
 }
@@ -297,15 +316,12 @@ mod Floor {
     }
     while io.read_line() is Some(line) {
       let row = [];
-      debug::dbg("=================");
       // debug::dbg(row_above);
       while line!.pop_front() is Some(c) {
         row ++= [init_roll(c)]
       }
       x_w_ = None();
-      debug::dbg("xxxxxxxxxxxxxxxxxxxxx");
       // debug::dbg(row);
-      debug::dbg("xxxxxxxxxxxxxxxxxxxxx");
       row_above = row
       floor!.push_back(&row)
     }
