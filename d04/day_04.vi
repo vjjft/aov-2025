@@ -225,8 +225,8 @@ mod Roll {
 
   // pub impl show: Show[Roll];
   pub impl show: Show[Roll] {
-    fn show(&_: &Roll) -> Show {
-      Show::Literal("here is a roll being shown")
+    fn show(&r: &Roll) -> Show {
+      Show::Literal("state{r.state.show()}")
     }
   }
 }
