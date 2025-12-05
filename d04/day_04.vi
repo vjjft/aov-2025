@@ -44,7 +44,7 @@ mod NH {
   }
 }
 
-struct? Roll({ state: RollState, nh: Option[NH] });
+struct? Roll({ state: RollState, nh: NH });
 mod Roll {
   pub fn parse_char(c: Char) -> Option[Roll] {
     let state = RollState(when {
@@ -54,7 +54,7 @@ mod Roll {
         return None();
       }
     });
-    Some(Roll({ state, nh: None() }))
+    Some(Roll({ state, nh: NH::new() }))
   }
   pub fn parse_char_assume(c: Char) -> Roll {
     parse_char(c).assume()
