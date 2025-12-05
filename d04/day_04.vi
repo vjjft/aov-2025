@@ -15,7 +15,7 @@ pub fn main(&io: &IO) {
 
   io.out(floor.show() as String)
   floor.notify()
-  io.out(floor.count_can_lift() as String)
+  io.out("can lift: {floor.count_can_lift()}")
 
   io.println("Part 1: {part1}");
   io.println("Part 2: {part2}");
@@ -194,9 +194,9 @@ mod Roll {
   }
 
   pub fn .count_neighbor_rolls(&roll: &Roll) -> N32 {
-    let fn* check(total: N32, (_, nb): (Dir, OCRS)) -> N32 {
-      total + (check_dir(nb) as N32)
-    }
+    // let fn* check(total: N32, (_, nb): (Dir, OCRS)) -> N32 {
+    //   total + (check_dir(nb) as N32)
+    // }
     // let x = roll.nh;
     // let ir = x.iter_ref();
     // ir.fold(0, check)
@@ -225,7 +225,7 @@ mod Roll {
 
   // pub impl show: Show[Roll];
   pub impl show: Show[Roll] {
-    fn show(&r: &Roll) -> Show {
+    fn show(&_: &Roll) -> Show {
       Show::Literal("here is a roll being shown")
     }
   }
@@ -239,31 +239,40 @@ mod Floor {
     let floor = Floor([]);
 
     let row_above: List[&Roll] = [];
-    let roll_nw: Option[&Roll] = None();
-    let roll_w: Option[&Roll] = None();
+    let x_nw: Option[&Roll] = None();
+    let x_w_: Option[&Roll] = None();
 
     let fn* init_roll(c: Char) {
       let roll = Roll::parse_char_assume(c);
 
-      let roll_n = row_above.pop_front();
-      let roll_ne = row_above.get(0);
-      if roll_nw is Some(&roll_nw) {
+      let x_n_ = row_above.pop_front();
+      let x_ne = row_above.get(0);
+      if x_nw is Some(&x_nw) {
         let (a, b) = init_channel_pair();
         roll.nh.insert(Dir::NW(), a);
-        roll_nw.nh.insert(Dir::SE(), b);
+        x_nw.nh.insert(Dir::SE(), b);
       }
-      // if roll_n is Some(&roll_n) {
-      //   (roll_n.nh.s, roll.nh.n) = init_channel_pair()
-      // }
-      // if roll_ne is Some(&roll_ne) {
-      //   (roll_ne.nh.sw, roll.nh.ne) = init_channel_pair()
-      // }
-      // if roll_w is Some(&roll_w) {
-      //   (roll_w.nh.s, roll.nh.w) = init_channel_pair()
-      // }
+      if x_n_ is Some(&x_n_) {
+        // (x_n_.nh.s, roll.nh.n) = init_channel_pair()
+        let (a, b) = init_channel_pair();
+        roll.nh.insert(Dir::N_(), a);
+        x_n_.nh.insert(Dir::S_(), b);
+      }
+      if x_ne is Some(&x_ne) {
+        // (x_ne.nh.sw, roll.nh.ne) = init_channel_pair()
+        let (a, b) = init_channel_pair();
+        roll.nh.insert(Dir::NE(), a);
+        x_ne.nh.insert(Dir::SW(), b);
+      }
+      if x_w_ is Some(&x_w_) {
+        // (x_w_.nh.s, roll.nh.w) = init_channel_pair()
+        let (a, b) = init_channel_pair();
+        roll.nh.insert(Dir::W_(), a);
+        x_w_.nh.insert(Dir::E_(), b);
+      }
 
-      roll_nw = roll_n;
-      roll_w = Some(&roll);
+      x_nw = x_n_;
+      x_w_ = Some(&roll);
       &roll
     }
     while io.read_line() is Some(line) {
