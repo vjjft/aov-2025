@@ -33,7 +33,7 @@ enum* Dir {
 }
 mod Dir {
   use #root::ops::comparison::Ord::{Ord, Eq, Gt, Lt};
-  // pub impl show: Show[Dir];
+  pub impl show: Show[Dir];
   pub impl ord: Ord[Dir] {
     fn cmp(&a: &Dir, &b: &Dir) -> Ord {
       match (a) {
@@ -200,7 +200,7 @@ mod Roll {
     for (_, nb) in roll.nh.iter() {
       total += check_dir(nb) as N32
     }
-    total
+    total.dbg()
   }
 
   pub fn send(&c: &Chan, s: RollState) {
@@ -217,9 +217,11 @@ mod Roll {
   pub impl show: Show[Roll] {
     fn show(&r: &Roll) -> Show {
       let str = "";
-      for (_, &s) in r.nh.iter() {
+      str ++= "{r.nh.len()} - ";
+      for (dir, &s) in r.nh.iter() {
+        str ++= "{dir.show()}";
         str ++= match (s.get()) {
-          None() { ' ' }
+          None() { 'x' }
           Some(r) {
             if (r!) {
               '#'
@@ -281,6 +283,7 @@ mod Floor {
       while line!.pop_front() is Some(c) {
         row ++= [init_roll(c)]
       }
+      x_w_ = None();
       row_above = row
       floor!.push_back(&row)
     }
