@@ -144,16 +144,15 @@ mod Dir {
   }
 }
 
-type OptChan[M] = Option[&Channel[M]];
-type Neighborhood[M] = Map[Dir, OptChan[M]];
 struct* RollState(Bool);
 mod RollState {
   pub impl show: Show[RollState];
 }
-type NH = Neighborhood[RollState];
+type Chan = Channel[RollState];
+type NH = Map[Dir, &Chan];
 mod NH {
   pub fn new() -> NH {
-    Map::empty[Dir, OCRS]
+    Map::empty[Dir, &Chan]
   }
   pub impl show: Show[NH] {
     fn show(_: &NH) -> Show {
@@ -186,38 +185,29 @@ mod Roll {
       }
     }
   }
-  pub fn check_dir(x: OCRS) -> Bool {
-    match (x) {
+  pub fn check_dir(&c: &Chan) -> Bool {
+    let o = c.get();
+    match (o) {
       None() { false }
-      Some(_) { true }
+      Some(s) {
+        return s!;
+      }
     }
   }
 
   pub fn .count_neighbor_rolls(&roll: &Roll) -> N32 {
-    // let fn* check(total: N32, (_, nb): (Dir, OCRS)) -> N32 {
-    //   total + (check_dir(nb) as N32)
-    // }
-    // let x = roll.nh;
-    // let ir = x.iter_ref();
-    // ir.fold(0, check)
     let total = 0;
     for (_, nb) in roll.nh.iter() {
-      total += (check_dir(nb) as N32)
+      total += check_dir(nb) as N32
     }
     total
   }
 
-  pub fn send(o: OCRS, s: RollState) {
-    if o is Some(c) {
-      c.*.send(s);
-    }
+  pub fn send(&c: &Chan, s: RollState) {
+    c.send(s);
   }
 
   pub fn .notify(&roll: &Roll) {
-    // let fn* notify(dir) {
-    //   Roll::send(dir, roll.state)
-    // }
-    // roll.nh.iter_ref().for_each(notify);
     for (_, nb) in roll.nh.iter() {
       Roll::send(nb, roll.state)
     }
@@ -226,12 +216,23 @@ mod Roll {
   // pub impl show: Show[Roll];
   pub impl show: Show[Roll] {
     fn show(&r: &Roll) -> Show {
-      Show::Literal("state{r.state.show()}")
+      let str = "";
+      for (_, &s) in r.nh.iter() {
+        str ++= match (s.get()) {
+          None() { ' ' }
+          Some(r) {
+            if (r!) {
+              '#'
+            } else {
+              '.'
+            }
+          }
+        } as String
+      }
+      Show::Literal("state{r.state.show()} {str}")
     }
   }
 }
-
-type OCRS = OptChan[RollState];
 
 struct? Floor(pub List[&List[&Roll]]);
 mod Floor {
@@ -313,9 +314,8 @@ mod Floor {
     count
   }
 
-  fn init_channel_pair() -> (OCRS, OCRS) {
-    let (a, b) = Channel::new_pair[RollState]();
-    (Some(a), Some(b))
+  fn init_channel_pair() -> (&Chan, &Chan) {
+    Channel::new_pair[RollState]()
   }
 
   pub impl to_string: Cast[&Floor, String] {
