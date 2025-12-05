@@ -10,10 +10,10 @@ pub fn main(&io: &IO) {
   let floor = Floor::parse_input(&io);
 
   // io.log(floor);
-  io.out(floor as String);
+  io.out(&floor as String);
 
-  Floor::notify(floor)
-  io.out(Floor::count_can_lift(floor) as String)
+  floor.notify()
+  io.out(floor.count_can_lift() as String)
 
   io.println("Part 1: {part1}");
   io.println("Part 2: {part2}");
@@ -86,7 +86,7 @@ mod Roll {
       Some(&c) { true }
     }
   }
-  pub fn count_neighbor_rolls(&roll: &Roll) -> N32 {
+  pub fn .count_neighbor_rolls(&roll: &Roll) -> N32 {
     let count = 0;
     count += check_dir(roll.nh.n) as N32;
     count += check_dir(roll.nh.s) as N32;
@@ -104,7 +104,7 @@ mod Roll {
       c.*.send(s);
     }
   }
-  pub fn notify(&roll: &Roll) {
+  pub fn .notify(&roll: &Roll) {
     Roll::send(roll.nh.n, roll.state);
     Roll::send(roll.nh.s, roll.state);
     Roll::send(roll.nh.e, roll.state);
@@ -120,7 +120,7 @@ type OCRS = OptChan[RollState];
 
 struct? Floor(pub List[&List[&Roll]]);
 mod Floor {
-  pub fn parse_input(&io: &IO) -> &Floor {
+  pub fn parse_input(&io: &IO) -> Floor {
     let floor = Floor([]);
 
     let row_above: List[&Roll] = [];
@@ -157,18 +157,22 @@ mod Floor {
       row_above = row
       floor!.push_back(&row)
     }
-    &floor
+    floor
   }
 
-  pub fn notify(&floor: &Floor) {
+  pub fn .notify(&floor: &Floor) {
+    floor.apply(Roll::notify)
+  }
+
+  pub fn .apply[F*; fn F(&Roll) -> ()](&floor: &Floor, f: F) {
     for &&row in floor!.iter_ref() {
       for &roll in row.iter_ref() {
-        Roll::notify(roll)
+        f(roll)
       }
     }
   }
 
-  pub fn count_can_lift(&floor: &Floor) -> N32 {
+  pub fn .count_can_lift(&floor: &Floor) -> N32 {
     let count = 0;
     for &&row in floor!.iter_ref() {
       for &roll in row.iter_ref() {
