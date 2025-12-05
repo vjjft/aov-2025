@@ -302,7 +302,7 @@ mod Floor {
     let count = 0;
     for &&row in floor!.iter_ref() {
       for &roll in row.iter_ref() {
-        if roll.*.state! {
+        if !roll.*.state! {
           continue;
         }
         if (4 > Roll::count_neighbor_rolls(roll)) {
