@@ -94,7 +94,7 @@ pub mod list {
 pub struct Channel[M]((Option[M], ~Option[M]));
 
 pub mod Channel {
-  pub fn .send[M*](Channel[M](got, ~out), value: M) -> Option[M] {
+  pub fn .send[M*](&Channel[M](got, ~out), value: M) -> Option[M] {
     out = Some(value);
     got
   }

@@ -10,9 +10,9 @@ pub fn main(&io: &IO) {
   let floor = Floor::parse_input(&io);
 
   // io.log(floor);
-  io.out(&floor as String);
+  io.out(floor as String);
 
-  // io.out(floor.count_neighbor_rolls() as String)
+  Floor::notify(floor)
   io.out(Floor::count_can_lift(floor) as String)
 
   io.println("Part 1: {part1}");
@@ -71,7 +71,7 @@ mod Roll {
       }
     }
   }
-  pub fn check_n(x: OCRS) -> Bool {
+  pub fn check_dir(x: OCRS) -> Bool {
     match (x) {
       None() { false }
       Some(&c) {
@@ -84,16 +84,31 @@ mod Roll {
   }
   pub fn count_neighbor_rolls(&roll: &Roll) -> N32 {
     let count = 0;
-    count += check_n(roll.nh.n) as N32;
-    count += check_n(roll.nh.s) as N32;
-    count += check_n(roll.nh.e) as N32;
-    count += check_n(roll.nh.w) as N32;
-    count += check_n(roll.nh.ne) as N32;
-    count += check_n(roll.nh.nw) as N32;
-    count += check_n(roll.nh.se) as N32;
-    count += check_n(roll.nh.sw) as N32;
+    count += check_dir(roll.nh.n) as N32;
+    count += check_dir(roll.nh.s) as N32;
+    count += check_dir(roll.nh.e) as N32;
+    count += check_dir(roll.nh.w) as N32;
+    count += check_dir(roll.nh.ne) as N32;
+    count += check_dir(roll.nh.nw) as N32;
+    count += check_dir(roll.nh.se) as N32;
+    count += check_dir(roll.nh.sw) as N32;
     count.dbg()
     count
+  }
+  pub fn send(o: OCRS, s: RollState) {
+    if o is Some(c) {
+      c.*.send(s);
+    }
+  }
+  pub fn notify(&roll: &Roll) {
+    Roll::send(roll.nh.n, roll.state);
+    Roll::send(roll.nh.s, roll.state);
+    Roll::send(roll.nh.e, roll.state);
+    Roll::send(roll.nh.w, roll.state);
+    Roll::send(roll.nh.ne, roll.state);
+    Roll::send(roll.nh.nw, roll.state);
+    Roll::send(roll.nh.se, roll.state);
+    Roll::send(roll.nh.sw, roll.state);
   }
 }
 
@@ -101,7 +116,7 @@ type OCRS = OptChan[RollState];
 
 struct? Floor(pub List[&List[&Roll]]);
 mod Floor {
-  pub fn parse_input(&io: &IO) -> Floor {
+  pub fn parse_input(&io: &IO) -> &Floor {
     let floor = Floor([]);
 
     let row_above: List[&Roll] = [];
@@ -135,13 +150,24 @@ mod Floor {
       row_above = row
       floor!.push_back(&row)
     }
-    floor
+    &floor
   }
 
-  pub fn count_can_lift(floor: Floor) -> N32 {
+  pub fn notify(&floor: &Floor) {
+    for &&row in floor!.iter_ref() {
+      for &roll in row.iter_ref() {
+        Roll::notify(roll)
+      }
+    }
+  }
+
+  pub fn count_can_lift(&floor: &Floor) -> N32 {
     let count = 0;
     for &&row in floor!.iter_ref() {
       for &roll in row.iter_ref() {
+        if roll.*.state! {
+          continue;
+        }
         if (4 > Roll::count_neighbor_rolls(roll)) {
           count += 1
         }
