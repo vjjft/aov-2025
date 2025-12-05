@@ -7,11 +7,7 @@ pub fn main(&io: &IO) {
   let part1 = 0[N64];
   let part2 = 0[N64];
 
-  let floor = Floor([]);
-  while io.read_line() is Some(line) {
-    let row = line!.map(Roll::parse_char_assume);
-    floor!.push_back(row)
-  }
+  let floor = Floor::parse_input(&io);
 
   // io.log(floor);
   io.out(&floor as String);
@@ -76,6 +72,15 @@ mod Roll {
 
 struct? Floor(List[List[Roll]]);
 mod Floor {
+  pub fn parse_input(&io: &IO) -> Floor {
+    let floor = Floor([]);
+    while io.read_line() is Some(line) {
+      let row = line!.map(Roll::parse_char_assume);
+      floor!.push_back(row)
+    }
+    floor
+  }
+
   pub impl to_string: Cast[&Floor, String] {
     fn cast(&floor: &Floor) -> String {
       let str = "";
