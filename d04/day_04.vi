@@ -320,6 +320,7 @@ mod Floor {
       while line!.pop_front() is Some(c) {
         row ++= [init_roll(c)]
       }
+      x_nw = None();
       x_w_ = None();
       // debug::dbg(row);
       row_above = row
