@@ -12,6 +12,7 @@ pub fn main(&io: &IO) {
   // io.log(floor);
   io.out(&floor as String);
 
+  io.out(floor.show() as String)
   floor.notify()
   io.out(floor.count_can_lift() as String)
 
@@ -30,7 +31,17 @@ struct? Neighborhood[M]({
   se: OptChan[M],
   sw: OptChan[M],
 });
+mod Neighborhood {
+  pub impl show[M]: Show[Neighborhood[M]] {
+    fn show(&n: &Neighborhood[M]) -> Show {
+      Show::Constructor("Neighborhood", Show::Literal("5"))
+    }
+  }
+}
 struct* RollState(Bool);
+mod RollState {
+  pub impl show: Show[RollState];
+}
 type NH = Neighborhood[RollState];
 mod NH {
   pub fn new() -> NH {
@@ -114,6 +125,7 @@ mod Roll {
     Roll::send(roll.nh.se, roll.state);
     Roll::send(roll.nh.sw, roll.state);
   }
+  pub impl show: Show[Roll];
 }
 
 type OCRS = OptChan[RollState];
@@ -204,4 +216,6 @@ mod Floor {
       str
     }
   }
+
+  pub impl show: Show[Floor];
 }

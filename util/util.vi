@@ -113,6 +113,12 @@ pub mod Channel {
       o = None();
     }
   }
+  pub impl show[M; Show[M]]: Show[Channel[M]] {
+    fn show(&c: &Channel[M]) -> Show {
+      Show::Tuple([c.0.show(), Show::Literal("~")])
+    }
+  }
+
   // pub impl fork[M+]: Fork[Channel[M]] {
   //   fn fork(&c: &Channel[M]) -> Channel[M] {
   //     let Channel(i, _) = c;
