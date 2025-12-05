@@ -9,10 +9,10 @@ pub fn main(&io: &IO) {
 
   let floor = Floor::parse_input(&io);
 
-
-  
   // io.log(floor);
   io.out(&floor as String);
+
+  // io.out(floor.check() as String)
 
   io.println("Part 1: {part1}");
   io.println("Part 2: {part2}");
@@ -29,7 +29,7 @@ struct? Neighborhood[M]({
   se: OptChan[M],
   sw: OptChan[M],
 });
-struct? RollState(Bool);
+struct* RollState(Bool);
 type NH = Neighborhood[RollState];
 mod NH {
   pub fn new() -> NH {
@@ -70,11 +70,34 @@ mod Roll {
       }
     }
   }
+  pub fn check_n(x: OCRS) -> Bool {
+    match (x) {
+      None() { false }
+      Some(&c) {
+        match (c.get()) {
+          None() { false }
+          Some(RollState(bool)) { bool }
+        }
+      }
+    }
+  }
+  pub fn count_neighbor_rolls(&roll: &Roll) -> N32 {
+    let count = 0;
+    count += check_n(roll.nh.n) as N32;
+    count += check_n(roll.nh.s) as N32;
+    count += check_n(roll.nh.e) as N32;
+    count += check_n(roll.nh.w) as N32;
+    count += check_n(roll.nh.ne) as N32;
+    count += check_n(roll.nh.nw) as N32;
+    count += check_n(roll.nh.se) as N32;
+    count += check_n(roll.nh.sw) as N32;
+    count
+  }
 }
 
 type OCRS = OptChan[RollState];
 
-struct? Floor(List[List[&Roll]]);
+struct? Floor(pub List[&List[&Roll]]);
 mod Floor {
   pub fn parse_input(&io: &IO) -> Floor {
     let floor = Floor([]);
@@ -108,9 +131,20 @@ mod Floor {
     while io.read_line() is Some(line) {
       let row = line!.map(init_roll);
       row_above = row
-      floor!.push_back(row)
+      floor!.push_back(&row)
     }
     floor
+  }
+
+  pub fn check_neighbors(floor: Floor) -> N32 {
+    let count = 0;
+    for &&row in floor!.iter_ref() {
+      for &roll in row.iter_ref() {
+        count += Roll::count_neighbor_rolls(roll);
+        // count += roll.count_neighbor_rolls();
+      }
+    }
+    count
   }
 
   fn init_channel_pair() -> (OCRS, OCRS) {
@@ -121,7 +155,7 @@ mod Floor {
   pub impl to_string: Cast[&Floor, String] {
     fn cast(&floor: &Floor) -> String {
       let str = "";
-      for &row in floor!.iter_ref() {
+      for &&row in floor!.iter_ref() {
         for roll in row.iter() {
           str!.push_back(roll as Char);
         }
