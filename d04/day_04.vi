@@ -40,96 +40,96 @@ mod Dir {
         N_() {
           match (b) {
             N_() { Eq() }
-            S_() { Eq() }
-            E_() { Eq() }
-            W_() { Eq() }
-            NW() { Eq() }
-            NE() { Eq() }
-            SW() { Eq() }
-            SE() { Eq() }
+            S_() { Gt() }
+            E_() { Gt() }
+            W_() { Gt() }
+            NW() { Gt() }
+            NE() { Gt() }
+            SW() { Gt() }
+            SE() { Gt() }
           }
         }
         S_() {
           match (b) {
-            N_() { Eq() }
+            N_() { Lt() }
             S_() { Eq() }
-            E_() { Eq() }
-            W_() { Eq() }
-            NW() { Eq() }
-            NE() { Eq() }
-            SW() { Eq() }
-            SE() { Eq() }
+            E_() { Gt() }
+            W_() { Gt() }
+            NW() { Gt() }
+            NE() { Gt() }
+            SW() { Gt() }
+            SE() { Gt() }
           }
         }
         E_() {
           match (b) {
-            N_() { Eq() }
-            S_() { Eq() }
+            N_() { Lt() }
+            S_() { Lt() }
             E_() { Eq() }
-            W_() { Eq() }
-            NW() { Eq() }
-            NE() { Eq() }
-            SW() { Eq() }
-            SE() { Eq() }
+            W_() { Gt() }
+            NW() { Gt() }
+            NE() { Gt() }
+            SW() { Gt() }
+            SE() { Gt() }
           }
         }
         W_() {
           match (b) {
-            N_() { Eq() }
-            S_() { Eq() }
-            E_() { Eq() }
+            N_() { Lt() }
+            S_() { Lt() }
+            E_() { Lt() }
             W_() { Eq() }
-            NW() { Eq() }
-            NE() { Eq() }
-            SW() { Eq() }
-            SE() { Eq() }
+            NW() { Gt() }
+            NE() { Gt() }
+            SW() { Gt() }
+            SE() { Gt() }
           }
         }
         NW() {
           match (b) {
-            N_() { Eq() }
-            S_() { Eq() }
-            E_() { Eq() }
-            W_() { Eq() }
+            N_() { Lt() }
+            S_() { Lt() }
+            E_() { Lt() }
+            W_() { Lt() }
             NW() { Eq() }
-            NE() { Eq() }
-            SW() { Eq() }
-            SE() { Eq() }
+            NE() { Gt() }
+            SW() { Gt() }
+            SE() { Gt() }
           }
         }
         NE() {
           match (b) {
-            N_() { Eq() }
-            S_() { Eq() }
-            E_() { Eq() }
-            W_() { Eq() }
-            NW() { Eq() }
+            N_() { Lt() }
+            S_() { Lt() }
+            E_() { Lt() }
+            W_() { Lt() }
+            NW() { Lt() }
             NE() { Eq() }
-            SW() { Eq() }
-            SE() { Eq() }
+            SW() { Gt() }
+            SE() { Gt() }
           }
         }
         SW() {
           match (b) {
-            N_() { Eq() }
-            S_() { Eq() }
-            E_() { Eq() }
-            W_() { Eq() }
-            NW() { Eq() }
-            NE() { Eq() }
+            N_() { Lt() }
+            S_() { Lt() }
+            E_() { Lt() }
+            W_() { Lt() }
+            NW() { Lt() }
+            NE() { Lt() }
             SW() { Eq() }
-            SE() { Eq() }
+            SE() { Gt() }
           }
         }
         SE() {
           match (b) {
-            N_() { Eq() }
-            S_() { Eq() }
-            E_() { Eq() }
-            W_() { Eq() }
-            NW() { Eq() }
-            NE() { Eq() }
-            SW() { Eq() }
+            N_() { Lt() }
+            S_() { Lt() }
+            E_() { Lt() }
+            W_() { Lt() }
+            NW() { Lt() }
+            NE() { Lt() }
+            SW() { Lt() }
             SE() { Eq() }
           }
         }
