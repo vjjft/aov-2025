@@ -72,14 +72,18 @@ mod Roll {
     }
   }
   pub fn check_dir(x: OCRS) -> Bool {
+    // match (x) {
+    //   None() { false }
+    //   Some(&c) {
+    //     match (c.get()) {
+    //       None() { false }
+    //       Some(RollState(bool)) { bool }
+    //     }
+    //   }
+    // }
     match (x) {
       None() { false }
-      Some(&c) {
-        match (c.get()) {
-          None() { false }
-          Some(RollState(bool)) { bool }
-        }
-      }
+      Some(&c) { true }
     }
   }
   pub fn count_neighbor_rolls(&roll: &Roll) -> N32 {
@@ -146,7 +150,10 @@ mod Floor {
       &roll
     }
     while io.read_line() is Some(line) {
-      let row = line!.map(init_roll);
+      let row = [];
+      while line!.pop_front() is Some(c) {
+        row ++= [init_roll(c)]
+      }
       row_above = row
       floor!.push_back(&row)
     }
