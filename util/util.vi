@@ -102,10 +102,9 @@ pub mod Channel {
   pub fn .get[M+](&Channel[M](i, _)) -> Option[M] {
     i
   }
-  pub fn new_pair[M*]() -> (Channel[M], Channel[M]) {
-    let (a, b);
-    let (x, y) = (~a, ~b);
-    (Channel(a, y), Channel(b, x))
+  pub fn new_pair[M?]() -> (&Channel[M], &Channel[M]) {
+    let (a, b) = (None(), None());
+    (&Channel(a, ~b), &Channel(b, ~a))
   }
   pub impl drop[M?]: Drop[Channel[M]] {
     fn drop(c: Channel[M]) {
@@ -114,4 +113,11 @@ pub mod Channel {
       o = None();
     }
   }
+  // pub impl fork[M+]: Fork[Channel[M]] {
+  //   fn fork(&c: &Channel[M]) -> Channel[M] {
+  //     let Channel(i, _) = c;
+  //     let x
+  //     Channel(i.fork(), x)
+  //   }
+  // }
 }

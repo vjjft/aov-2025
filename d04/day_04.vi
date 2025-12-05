@@ -9,6 +9,8 @@ pub fn main(&io: &IO) {
 
   let floor = Floor::parse_input(&io);
 
+
+  
   // io.log(floor);
   io.out(&floor as String);
 
@@ -16,7 +18,7 @@ pub fn main(&io: &IO) {
   io.println("Part 2: {part2}");
 }
 
-type OptChan[M] = Option[Channel[M]];
+type OptChan[M] = Option[&Channel[M]];
 struct? Neighborhood[M]({
   n: OptChan[M],
   s: OptChan[M],
@@ -70,23 +72,58 @@ mod Roll {
   }
 }
 
-struct? Floor(List[List[Roll]]);
+type OCRS = OptChan[RollState];
+
+struct? Floor(List[List[&Roll]]);
 mod Floor {
   pub fn parse_input(&io: &IO) -> Floor {
     let floor = Floor([]);
+
+    let row_above: List[&Roll] = [];
+    let roll_nw: Option[&Roll] = None();
+    let roll_w: Option[&Roll] = None();
+
+    let fn* init_roll(c: Char) {
+      let roll = Roll::parse_char_assume(c);
+
+      let roll_n = row_above.pop_front();
+      let roll_ne = row_above.get(0);
+      if roll_nw is Some(&roll_nw) {
+        (roll_nw.nh.se, roll.nh.nw) = init_channel_pair()
+      }
+      if roll_n is Some(&roll_n) {
+        (roll_n.nh.s, roll.nh.n) = init_channel_pair()
+      }
+      if roll_ne is Some(&roll_ne) {
+        (roll_ne.nh.sw, roll.nh.ne) = init_channel_pair()
+      }
+      if roll_w is Some(&roll_w) {
+        (roll_w.nh.s, roll.nh.w) = init_channel_pair()
+      }
+
+      roll_nw = roll_n;
+      roll_w = Some(&roll);
+      &roll
+    }
     while io.read_line() is Some(line) {
-      let row = line!.map(Roll::parse_char_assume);
+      let row = line!.map(init_roll);
+      row_above = row
       floor!.push_back(row)
     }
     floor
+  }
+
+  fn init_channel_pair() -> (OCRS, OCRS) {
+    let (a, b) = Channel::new_pair[RollState]();
+    (Some(a), Some(b))
   }
 
   pub impl to_string: Cast[&Floor, String] {
     fn cast(&floor: &Floor) -> String {
       let str = "";
       for &row in floor!.iter_ref() {
-        for &roll in row.iter_ref() {
-          str!.push_back(&roll as Char);
+        for roll in row.iter() {
+          str!.push_back(roll as Char);
         }
         str!.push_back('\n');
       }
