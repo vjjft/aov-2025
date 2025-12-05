@@ -2,6 +2,7 @@
 use #util::Channel;
 use #util::io::{log, out};
 use #root::ops::Cast;
+use #root::data::Map;
 
 pub fn main(&io: &IO) {
   let part1 = 0[N64];
@@ -20,24 +21,131 @@ pub fn main(&io: &IO) {
   io.println("Part 2: {part2}");
 }
 
-type OptChan[M] = Option[&Channel[M]];
-struct? Neighborhood[M]({
-  n: OptChan[M],
-  s: OptChan[M],
-  e: OptChan[M],
-  w: OptChan[M],
-  ne: OptChan[M],
-  nw: OptChan[M],
-  se: OptChan[M],
-  sw: OptChan[M],
-});
-mod Neighborhood {
-  pub impl show[M]: Show[Neighborhood[M]] {
-    fn show(&n: &Neighborhood[M]) -> Show {
-      Show::Constructor("Neighborhood", Show::Literal("5"))
+enum* Dir {
+  N_(),
+  S_(),
+  E_(),
+  W_(),
+  NW(),
+  NE(),
+  SW(),
+  SE(),
+}
+mod Dir {
+  use #root::ops::comparison::Ord::{Ord, Eq, Gt, Lt};
+  // pub impl show: Show[Dir];
+  pub impl ord: Ord[Dir] {
+    fn cmp(&a: &Dir, &b: &Dir) -> Ord {
+      match (a) {
+        N_() {
+          match (b) {
+            N_() { Eq() }
+            S_() { Eq() }
+            E_() { Eq() }
+            W_() { Eq() }
+            NW() { Eq() }
+            NE() { Eq() }
+            SW() { Eq() }
+            SE() { Eq() }
+          }
+        }
+        S_() {
+          match (b) {
+            N_() { Eq() }
+            S_() { Eq() }
+            E_() { Eq() }
+            W_() { Eq() }
+            NW() { Eq() }
+            NE() { Eq() }
+            SW() { Eq() }
+            SE() { Eq() }
+          }
+        }
+        E_() {
+          match (b) {
+            N_() { Eq() }
+            S_() { Eq() }
+            E_() { Eq() }
+            W_() { Eq() }
+            NW() { Eq() }
+            NE() { Eq() }
+            SW() { Eq() }
+            SE() { Eq() }
+          }
+        }
+        W_() {
+          match (b) {
+            N_() { Eq() }
+            S_() { Eq() }
+            E_() { Eq() }
+            W_() { Eq() }
+            NW() { Eq() }
+            NE() { Eq() }
+            SW() { Eq() }
+            SE() { Eq() }
+          }
+        }
+        NW() {
+          match (b) {
+            N_() { Eq() }
+            S_() { Eq() }
+            E_() { Eq() }
+            W_() { Eq() }
+            NW() { Eq() }
+            NE() { Eq() }
+            SW() { Eq() }
+            SE() { Eq() }
+          }
+        }
+        NE() {
+          match (b) {
+            N_() { Eq() }
+            S_() { Eq() }
+            E_() { Eq() }
+            W_() { Eq() }
+            NW() { Eq() }
+            NE() { Eq() }
+            SW() { Eq() }
+            SE() { Eq() }
+          }
+        }
+        SW() {
+          match (b) {
+            N_() { Eq() }
+            S_() { Eq() }
+            E_() { Eq() }
+            W_() { Eq() }
+            NW() { Eq() }
+            NE() { Eq() }
+            SW() { Eq() }
+            SE() { Eq() }
+          }
+        }
+        SE() {
+          match (b) {
+            N_() { Eq() }
+            S_() { Eq() }
+            E_() { Eq() }
+            W_() { Eq() }
+            NW() { Eq() }
+            NE() { Eq() }
+            SW() { Eq() }
+            SE() { Eq() }
+          }
+        }
+      }
+    }
+    fn lt(&a: &Dir, &b: &Dir) -> Bool {
+      a < b
+    }
+    fn le(&a: &Dir, &b: &Dir) -> Bool {
+      a <= b
     }
   }
 }
+
+type OptChan[M] = Option[&Channel[M]];
+type Neighborhood[M] = Map[Dir, OptChan[M]];
 struct* RollState(Bool);
 mod RollState {
   pub impl show: Show[RollState];
@@ -45,16 +153,12 @@ mod RollState {
 type NH = Neighborhood[RollState];
 mod NH {
   pub fn new() -> NH {
-    Neighborhood[RollState]({
-      n: None(),
-      s: None(),
-      e: None(),
-      w: None(),
-      ne: None(),
-      nw: None(),
-      se: None(),
-      sw: None(),
-    })
+    Map::empty[Dir, OCRS]
+  }
+  pub impl show: Show[NH] {
+    fn show(_: &NH) -> Show {
+      Show::Literal("")
+    }
   }
 }
 
@@ -83,49 +187,48 @@ mod Roll {
     }
   }
   pub fn check_dir(x: OCRS) -> Bool {
-    // match (x) {
-    //   None() { false }
-    //   Some(&c) {
-    //     match (c.get()) {
-    //       None() { false }
-    //       Some(RollState(bool)) { bool }
-    //     }
-    //   }
-    // }
     match (x) {
       None() { false }
-      Some(&c) { true }
+      Some(_) { true }
     }
   }
+
   pub fn .count_neighbor_rolls(&roll: &Roll) -> N32 {
-    let count = 0;
-    count += check_dir(roll.nh.n) as N32;
-    count += check_dir(roll.nh.s) as N32;
-    count += check_dir(roll.nh.e) as N32;
-    count += check_dir(roll.nh.w) as N32;
-    count += check_dir(roll.nh.ne) as N32;
-    count += check_dir(roll.nh.nw) as N32;
-    count += check_dir(roll.nh.se) as N32;
-    count += check_dir(roll.nh.sw) as N32;
-    count.dbg()
-    count
+    let fn* check(total: N32, (_, nb): (Dir, OCRS)) -> N32 {
+      total + (check_dir(nb) as N32)
+    }
+    // let x = roll.nh;
+    // let ir = x.iter_ref();
+    // ir.fold(0, check)
+    let total = 0;
+    for (_, nb) in roll.nh.iter() {
+      total += (check_dir(nb) as N32)
+    }
+    total
   }
+
   pub fn send(o: OCRS, s: RollState) {
     if o is Some(c) {
       c.*.send(s);
     }
   }
+
   pub fn .notify(&roll: &Roll) {
-    Roll::send(roll.nh.n, roll.state);
-    Roll::send(roll.nh.s, roll.state);
-    Roll::send(roll.nh.e, roll.state);
-    Roll::send(roll.nh.w, roll.state);
-    Roll::send(roll.nh.ne, roll.state);
-    Roll::send(roll.nh.nw, roll.state);
-    Roll::send(roll.nh.se, roll.state);
-    Roll::send(roll.nh.sw, roll.state);
+    // let fn* notify(dir) {
+    //   Roll::send(dir, roll.state)
+    // }
+    // roll.nh.iter_ref().for_each(notify);
+    for (_, nb) in roll.nh.iter() {
+      Roll::send(nb, roll.state)
+    }
   }
-  pub impl show: Show[Roll];
+
+  // pub impl show: Show[Roll];
+  pub impl show: Show[Roll] {
+    fn show(&r: &Roll) -> Show {
+      Show::Literal("here is a roll being shown")
+    }
+  }
 }
 
 type OCRS = OptChan[RollState];
@@ -145,17 +248,19 @@ mod Floor {
       let roll_n = row_above.pop_front();
       let roll_ne = row_above.get(0);
       if roll_nw is Some(&roll_nw) {
-        (roll_nw.nh.se, roll.nh.nw) = init_channel_pair()
+        let (a, b) = init_channel_pair();
+        roll.nh.insert(Dir::NW(), a);
+        roll_nw.nh.insert(Dir::SE(), b);
       }
-      if roll_n is Some(&roll_n) {
-        (roll_n.nh.s, roll.nh.n) = init_channel_pair()
-      }
-      if roll_ne is Some(&roll_ne) {
-        (roll_ne.nh.sw, roll.nh.ne) = init_channel_pair()
-      }
-      if roll_w is Some(&roll_w) {
-        (roll_w.nh.s, roll.nh.w) = init_channel_pair()
-      }
+      // if roll_n is Some(&roll_n) {
+      //   (roll_n.nh.s, roll.nh.n) = init_channel_pair()
+      // }
+      // if roll_ne is Some(&roll_ne) {
+      //   (roll_ne.nh.sw, roll.nh.ne) = init_channel_pair()
+      // }
+      // if roll_w is Some(&roll_w) {
+      //   (roll_w.nh.s, roll.nh.w) = init_channel_pair()
+      // }
 
       roll_nw = roll_n;
       roll_w = Some(&roll);
