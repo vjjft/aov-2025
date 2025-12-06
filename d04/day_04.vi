@@ -11,7 +11,7 @@ pub fn main(&io: &IO) {
   let floor = Floor::parse_input(&io);
 
   // io.log(floor);
-  io.out(&floor as String);
+  // io.out(&floor as String);
 
   io.out(floor.show() as String)
   floor.notify()
@@ -284,12 +284,9 @@ mod Floor {
       let x_n_ = row_above.pop_front();
       let x_ne = row_above.get(0);
       if x_nw is Some(&x_nw) {
-        debug::dbg("here")
         let (a, b) = init_channel_pair();
-        debug::dbg(&x_nw);
         roll.nh.insert(Dir::NW(), a);
         x_nw.nh.insert(Dir::SE(), b);
-        debug::dbg(&x_nw);
       }
       if x_n_ is Some(&x_n_) {
         // (x_n_.nh.s, roll.nh.n) = init_channel_pair()
@@ -305,9 +302,13 @@ mod Floor {
       }
       if x_w_ is Some(&x_w_) {
         // (x_w_.nh.s, roll.nh.w) = init_channel_pair()
+        debug::dbg("=====")
+        debug::dbg((&x_w_, &roll));
         let (a, b) = init_channel_pair();
         roll.nh.insert(Dir::W_(), a);
         x_w_.nh.insert(Dir::E_(), b);
+        debug::dbg((&x_w_, &roll));
+        debug::dbg((&x_w_, &roll));
       }
 
       x_nw = x_n_;
