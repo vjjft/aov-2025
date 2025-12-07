@@ -13,19 +13,11 @@ pub fn main(&io: &IO) {
   // io.log(floor);
   // io.out(&floor as String);
 
-  io.out(floor.show() as String)
+  // io.out(floor.show() as String)
   floor.notify()
-  floor.notify()
-  floor.notify()
-  floor.notify()
-  floor.notify()
-  floor.notify()
-  floor.notify()
-  floor.notify()
-  floor.notify()
-  floor.notify()
-  io.out(floor.show() as String)
-  io.out("can lift: {floor.count_can_lift()}")
+  // io.out(floor.show() as String)
+  // io.out("can lift: {floor.count_can_lift()}")
+  part1 = floor.count_can_lift()
 
   io.println("Part 1: {part1}");
   io.println("Part 2: {part2}");
@@ -344,8 +336,8 @@ mod Floor {
     }
   }
 
-  pub fn .count_can_lift(&floor: &Floor) -> N32 {
-    let count = 0;
+  pub fn .count_can_lift(&floor: &Floor) -> N64 {
+    let count = 0[N64];
     for &&row in floor!.iter_ref() {
       for &roll in row.iter_ref() {
         if !roll.*.state! {
