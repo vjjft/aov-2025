@@ -1,0 +1,123 @@
+
+pub enum* Dir {
+  N_(),
+  S_(),
+  E_(),
+  W_(),
+  NW(),
+  NE(),
+  SW(),
+  SE(),
+}
+pub mod Dir {
+  use #root::ops::comparison::Ord::{Ord, Eq, Gt, Lt};
+  pub impl show: Show[Dir];
+  pub impl ord: Ord[Dir] {
+    fn cmp(&a: &Dir, &b: &Dir) -> Ord {
+      match (a) {
+        N_() {
+          match (b) {
+            N_() { Eq() }
+            S_() { Gt() }
+            E_() { Gt() }
+            W_() { Gt() }
+            NW() { Gt() }
+            NE() { Gt() }
+            SW() { Gt() }
+            SE() { Gt() }
+          }
+        }
+        S_() {
+          match (b) {
+            N_() { Lt() }
+            S_() { Eq() }
+            E_() { Gt() }
+            W_() { Gt() }
+            NW() { Gt() }
+            NE() { Gt() }
+            SW() { Gt() }
+            SE() { Gt() }
+          }
+        }
+        E_() {
+          match (b) {
+            N_() { Lt() }
+            S_() { Lt() }
+            E_() { Eq() }
+            W_() { Gt() }
+            NW() { Gt() }
+            NE() { Gt() }
+            SW() { Gt() }
+            SE() { Gt() }
+          }
+        }
+        W_() {
+          match (b) {
+            N_() { Lt() }
+            S_() { Lt() }
+            E_() { Lt() }
+            W_() { Eq() }
+            NW() { Gt() }
+            NE() { Gt() }
+            SW() { Gt() }
+            SE() { Gt() }
+          }
+        }
+        NW() {
+          match (b) {
+            N_() { Lt() }
+            S_() { Lt() }
+            E_() { Lt() }
+            W_() { Lt() }
+            NW() { Eq() }
+            NE() { Gt() }
+            SW() { Gt() }
+            SE() { Gt() }
+          }
+        }
+        NE() {
+          match (b) {
+            N_() { Lt() }
+            S_() { Lt() }
+            E_() { Lt() }
+            W_() { Lt() }
+            NW() { Lt() }
+            NE() { Eq() }
+            SW() { Gt() }
+            SE() { Gt() }
+          }
+        }
+        SW() {
+          match (b) {
+            N_() { Lt() }
+            S_() { Lt() }
+            E_() { Lt() }
+            W_() { Lt() }
+            NW() { Lt() }
+            NE() { Lt() }
+            SW() { Eq() }
+            SE() { Gt() }
+          }
+        }
+        SE() {
+          match (b) {
+            N_() { Lt() }
+            S_() { Lt() }
+            E_() { Lt() }
+            W_() { Lt() }
+            NW() { Lt() }
+            NE() { Lt() }
+            SW() { Lt() }
+            SE() { Eq() }
+          }
+        }
+      }
+    }
+    fn lt(&a: &Dir, &b: &Dir) -> Bool {
+      a < b
+    }
+    fn le(&a: &Dir, &b: &Dir) -> Bool {
+      a <= b
+    }
+  }
+}
