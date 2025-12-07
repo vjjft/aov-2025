@@ -101,13 +101,6 @@ pub mod Stream {
 
 pub struct Channel[M]((Stream[M], ~Stream[M]));
 pub mod Channel {
-  // pub fn .send[M*](&Channel[M](_, outflow), value: M) {
-  //   let rest;
-  //   let new_outflow = ~rest;
-  //   ~outflow = Stream::More(value, rest)
-  //   outflow = new_outflow;
-  // }
-
   pub fn .send[M](&Channel[M](_, ~stream), value: M) {
     stream = Stream::More(value, stream)
   }
@@ -149,12 +142,4 @@ pub mod Channel {
       Show::Tuple([c.0.show(), Show::Literal("~")])
     }
   }
-
-  // pub impl fork[M+]: Fork[Channel[M]] {
-  //   fn fork(&c: &Channel[M]) -> Channel[M] {
-  //     let Channel(i, _) = c;
-  //     let x
-  //     Channel(i.fork(), x)
-  //   }
-  // }
 }
