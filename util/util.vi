@@ -91,28 +91,59 @@ pub mod list {
   }
 }
 
-pub struct Channel[M]((Option[M], ~Option[M]));
+pub enum? Stream[M] {
+  More(M, Stream[M]),
+  Done(),
+}
+pub mod Stream {
+  pub impl show[M; Show[M]]: Show[Stream[M]];
+}
 
+pub struct Channel[M]((Stream[M], ~Stream[M]));
 pub mod Channel {
-  pub fn .send[M*](&Channel[M](got, ~out), value: M) -> Option[M] {
-    out = Some(value);
-    got
+  // pub fn .send[M*](&Channel[M](_, outflow), value: M) {
+  //   let rest;
+  //   let new_outflow = ~rest;
+  //   ~outflow = Stream::More(value, rest)
+  //   outflow = new_outflow;
+  // }
+
+  pub fn .send[M](&Channel[M](_, ~stream), value: M) {
+    stream = Stream::More(value, stream)
   }
 
-  pub fn .get[M+](&Channel[M](i, _)) -> Option[M] {
-    i
-  }
-  pub fn new_pair[M?]() -> (&Channel[M], &Channel[M]) {
-    let (a, b) = (None(), None());
-    (&Channel(a, ~b), &Channel(b, ~a))
-  }
-  pub impl drop[M?]: Drop[Channel[M]] {
-    fn drop(c: Channel[M]) {
-      let Channel(i, ~o) = c;
-      i.drop();
-      o = None();
+  pub fn .receive[M](&Channel[M](stream, _)) -> Option[M] {
+    match stream {
+      Stream::Done() {
+        stream = Stream::Done();
+        None()
+      }
+      Stream::More(msg, rest) {
+        stream = rest;
+        Some(msg)
+      }
     }
   }
+
+  pub fn .peek[M](&Channel[M](stream, _)) -> Option[&M] {
+    match &stream {
+      &Stream::Done() { None() }
+      &Stream::More(msg, _) { Some(&msg) }
+    }
+  }
+
+  pub fn new_pair[M?]() -> (Channel[M], Channel[M]) {
+    let (a, b);
+    (Channel(~a, ~b), Channel(b, a))
+  }
+
+  pub impl drop[M?]: Drop[Channel[M]] {
+    fn drop(c: Channel[M]) {
+      let Channel(_, ~o) = c;
+      o = Stream::Done();
+    }
+  }
+
   pub impl show[M; Show[M]]: Show[Channel[M]] {
     fn show(&c: &Channel[M]) -> Show {
       Show::Tuple([c.0.show(), Show::Literal("~")])

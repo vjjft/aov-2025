@@ -158,11 +158,13 @@ struct* RollState(Bool);
 mod RollState {
   pub impl show: Show[RollState];
 }
+
 type Chan = Channel[RollState];
-type NH = Map[Dir, &Chan];
+
+type NH = Map[Dir, Chan];
 mod NH {
   pub fn new() -> NH {
-    Map::empty[Dir, &Chan]
+    Map::empty[Dir, Chan]
   }
   pub impl show: Show[NH] {
     fn show(_: &NH) -> Show {
@@ -196,7 +198,7 @@ mod Roll {
     }
   }
   pub fn check_dir(&c: &Chan) -> Bool {
-    let o = c.get();
+    let o = c.receive();
     match (o) {
       None() { false }
       Some(s) {
@@ -207,8 +209,8 @@ mod Roll {
 
   pub fn .count_neighbor_rolls(&roll: &Roll) -> N32 {
     let total = 0;
-    for (_, nb) in roll.nh.iter() {
-      total += check_dir(nb) as N32
+    for &(_, nb) in roll.nh.iter_ref() {
+      total += check_dir(&nb) as N32
     }
     total.dbg()
   }
@@ -218,8 +220,8 @@ mod Roll {
   }
 
   pub fn .notify(&roll: &Roll) {
-    for (_, nb) in roll.nh.iter() {
-      Roll::send(nb, roll.state)
+    for &(_, nb) in roll.nh.iter_ref() {
+      Roll::send(&nb, roll.state)
     }
   }
 
@@ -230,7 +232,7 @@ mod Roll {
         match (o) {
           None() { "+" }
           Some(&c) {
-            match (c.get()) {
+            match (c.receive()) {
               None() { "x" }
               Some(s) {
                 if (s!) {
@@ -253,7 +255,7 @@ mod Roll {
       }
 
       let fn* dir_to_str(dir: Dir) -> String {
-        nr_to_str(r.nh.get(&dir))
+        nr_to_str(r.nh.at(&dir))
       }
 
       let str = "";
@@ -327,7 +329,7 @@ mod Floor {
       row_above = row
       floor!.push_back(&row)
     }
-    floor
+    floor.dbg_msg("floor constructed")
   }
 
   pub fn .notify(&floor: &Floor) {
@@ -357,7 +359,7 @@ mod Floor {
     count
   }
 
-  fn init_channel_pair() -> (&Chan, &Chan) {
+  fn init_channel_pair() -> (Chan, Chan) {
     Channel::new_pair[RollState]()
   }
 
