@@ -1,6 +1,5 @@
 
 use #util::Channel;
-use #util::io::{log, out};
 use #root::ops::Cast;
 use #root::data::Map;
 
@@ -10,13 +9,7 @@ pub fn main(&io: &IO) {
 
   let floor = Floor::parse_input(&io);
 
-  // io.log(floor);
-  // io.out(&floor as String);
-
-  // io.out(floor.show() as String)
   floor.notify()
-  // io.out(floor.show() as String)
-  // io.out("can lift: {floor.count_can_lift()}")
   part1 = floor.count_can_lift()
 
   io.println("Part 1: {part1}");
@@ -204,7 +197,7 @@ mod Roll {
     for &(_, nb) in roll.nh.iter_ref() {
       total += check_dir(&nb) as N32
     }
-    total.dbg()
+    total
   }
 
   pub fn send(&c: &Chan, s: RollState) {
@@ -217,7 +210,6 @@ mod Roll {
     }
   }
 
-  // pub impl show: Show[Roll];
   pub impl show: Show[Roll] {
     fn show(&r: &Roll) -> Show {
       let fn nr_to_str(o: Option[&Chan]) -> String {
@@ -283,26 +275,19 @@ mod Floor {
         x_nw.nh.insert(Dir::SE(), b);
       }
       if x_n_ is Some(&x_n_) {
-        // (x_n_.nh.s, roll.nh.n) = init_channel_pair()
         let (a, b) = init_channel_pair();
         roll.nh.insert(Dir::N_(), a);
         x_n_.nh.insert(Dir::S_(), b);
       }
       if x_ne is Some(&x_ne) {
-        // (x_ne.nh.sw, roll.nh.ne) = init_channel_pair()
         let (a, b) = init_channel_pair();
         roll.nh.insert(Dir::NE(), a);
         x_ne.nh.insert(Dir::SW(), b);
       }
       if x_w_ is Some(&x_w_) {
-        // (x_w_.nh.s, roll.nh.w) = init_channel_pair()
-        debug::dbg("=====")
-        debug::dbg((&x_w_, &roll));
         let (a, b) = init_channel_pair();
         roll.nh.insert(Dir::W_(), a);
         x_w_.nh.insert(Dir::E_(), b);
-        debug::dbg((&x_w_, &roll));
-        debug::dbg((&x_w_, &roll));
       }
 
       x_nw = x_n_;
@@ -311,17 +296,15 @@ mod Floor {
     }
     while io.read_line() is Some(line) {
       let row = [];
-      // debug::dbg(row_above);
       while line!.pop_front() is Some(c) {
         row ++= [init_roll(c)]
       }
       x_nw = None();
       x_w_ = None();
-      // debug::dbg(row);
       row_above = row
       floor!.push_back(&row)
     }
-    floor.dbg_msg("floor constructed")
+    floor
   }
 
   pub fn .notify(&floor: &Floor) {
