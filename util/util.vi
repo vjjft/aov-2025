@@ -108,10 +108,12 @@ pub mod Channel {
   pub fn .receive[M](&Channel[M](stream, _)) -> Option[M] {
     match stream {
       Stream::Done() {
+        debug::log("stream done");
         stream = Stream::Done();
         None()
       }
       Stream::More(msg, rest) {
+        debug::log("stream more");
         stream = rest;
         Some(msg)
       }
@@ -132,6 +134,7 @@ pub mod Channel {
 
   pub impl drop[M?]: Drop[Channel[M]] {
     fn drop(c: Channel[M]) {
+      debug::log("dropping channel");
       let Channel(_, ~o) = c;
       o = Stream::Done();
     }
