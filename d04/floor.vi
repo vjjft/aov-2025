@@ -83,16 +83,15 @@ pub mod Floor {
 
   pub fn .count_can_lift(&floor: &Floor) -> N64 {
     let count = 0[N64];
-    for &&row in floor!.grid.iter_ref() {
-      for &roll in row.iter_ref() {
-        if !roll.*.state! {
-          continue;
-        }
-        if (4 > Roll::count_neighbor_rolls(roll)) {
-          count += 1
-        }
+    let fn* check_can_lift(&roll: &Roll) {
+      if !roll.state! {
+        return;
+      }
+      if (4 > roll.count_neighbor_rolls()) {
+        count += 1
       }
     }
+    floor.apply(check_can_lift)
     count
   }
 
