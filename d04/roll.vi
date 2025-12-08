@@ -20,7 +20,7 @@ pub mod NH {
   }
 }
 
-pub struct? Roll(pub { state: RollState, nh: NH });
+pub struct? Roll(pub { state: RollState, nh: NH, id: Option[N64] });
 pub mod Roll {
   pub fn parse_char(c: Char) -> Option[Roll] {
     let state = RollState(when {
@@ -30,7 +30,7 @@ pub mod Roll {
         return None();
       }
     });
-    Some(Roll({ state, nh: NH::new() }))
+    Some(Roll({ state, nh: NH::new(), id: None() }))
   }
   pub fn parse_char_assume(c: Char) -> Roll {
     parse_char(c).assume()
@@ -113,6 +113,25 @@ pub mod Roll {
       str ++= "\n";
 
       Show::Literal("{str}")
+    }
+  }
+
+  use #root::ops::comparison::Ord::{Ord, Eq, Gt, Lt};
+  pub impl ord: Ord[Roll] {
+    fn cmp(&a: &Roll, &b: &Roll) -> Ord {
+      when {
+        a.id is Some(a) and b.id is Some(b) { Ord::cmp[N64](&a, &b) }
+        a.id is None() and b.id is None() { Eq() }
+        a.id is None() { Lt() }
+        b.id is None() { Gt() }
+        _ { debug::error("unreachable") }
+      }
+    }
+    fn lt(&a: &Roll, &b: &Roll) -> Bool {
+      a < b
+    }
+    fn le(&a: &Roll, &b: &Roll) -> Bool {
+      a <= b
     }
   }
 }

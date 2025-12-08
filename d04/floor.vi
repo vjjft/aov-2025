@@ -1,6 +1,7 @@
 
 use #util::Channel;
 use #root::ops::Cast;
+use #root::data::Set;
 
 pub mod roll = "./roll.vi";
 use roll::{Chan, Roll, RollState};
@@ -8,17 +9,23 @@ use roll::{Chan, Roll, RollState};
 pub mod dir = "./dir.vi";
 use dir::Dir;
 
-pub struct? Floor(pub List[&List[&Roll]]);
+pub struct? Floor(pub { grid: List[&List[&Roll]], set: Set[&Roll] });
 pub mod Floor {
   pub fn parse_input(&io: &IO) -> Floor {
-    let floor = Floor([]);
+    let floor = Floor({ grid: [], set: Set::empty });
 
     let row_above: List[&Roll] = [];
     let x_nw: Option[&Roll] = None();
     let x_w_: Option[&Roll] = None();
 
+    let n = 0[N64];
     let fn* init_roll(c: Char) {
       let roll = Roll::parse_char_assume(c);
+
+      roll!.id = Some(do {
+        n += 1;
+        n
+      })
 
       let x_n_ = row_above.pop_front();
       let x_ne = row_above.get(0);
@@ -50,12 +57,14 @@ pub mod Floor {
     while io.read_line() is Some(line) {
       let row = [];
       while line!.pop_front() is Some(c) {
-        row ++= [init_roll(c)]
+        let roll = init_roll(c);
+        row ++= [roll];
+        floor!.set.insert(roll);
       }
       x_nw = None();
       x_w_ = None();
       row_above = row
-      floor!.push_back(&row)
+      floor!.grid.push_back(&row)
     }
     floor
   }
@@ -65,7 +74,7 @@ pub mod Floor {
   }
 
   pub fn .apply[F*; fn F(&Roll) -> ()](&floor: &Floor, f: F) {
-    for &&row in floor!.iter_ref() {
+    for &&row in floor!.grid.iter_ref() {
       for &roll in row.iter_ref() {
         f(roll)
       }
@@ -74,7 +83,7 @@ pub mod Floor {
 
   pub fn .count_can_lift(&floor: &Floor) -> N64 {
     let count = 0[N64];
-    for &&row in floor!.iter_ref() {
+    for &&row in floor!.grid.iter_ref() {
       for &roll in row.iter_ref() {
         if !roll.*.state! {
           continue;
@@ -94,7 +103,7 @@ pub mod Floor {
   pub impl to_string: Cast[&Floor, String] {
     fn cast(&floor: &Floor) -> String {
       let str = "";
-      for &&row in floor!.iter_ref() {
+      for &&row in floor!.grid.iter_ref() {
         for roll in row.iter() {
           str!.push_back(roll as Char);
         }
