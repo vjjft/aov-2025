@@ -1,0 +1,118 @@
+
+use #root::data::Map;
+
+pub struct* RollState(pub Bool);
+pub mod RollState {
+  pub impl show: Show[RollState];
+}
+
+pub type Chan = Channel[RollState];
+
+pub type NH = Map[Dir, Chan];
+pub mod NH {
+  pub fn new() -> NH {
+    Map::empty[Dir, Chan]
+  }
+  pub impl show: Show[NH] {
+    fn show(_: &NH) -> Show {
+      Show::Literal("")
+    }
+  }
+}
+
+pub struct? Roll(pub { state: RollState, nh: NH });
+pub mod Roll {
+  pub fn parse_char(c: Char) -> Option[Roll] {
+    let state = RollState(when {
+      c == '@' { true }
+      c == '.' { false }
+      _ {
+        return None();
+      }
+    });
+    Some(Roll({ state, nh: NH::new() }))
+  }
+  pub fn parse_char_assume(c: Char) -> Roll {
+    parse_char(c).assume()
+  }
+  pub impl to_char: Cast[&Roll, Char] {
+    fn cast(&roll: &Roll) -> Char {
+      if roll.state! == true {
+        '@'
+      } else {
+        '.'
+      }
+    }
+  }
+  pub fn check_dir(&c: &Chan) -> Bool {
+    let o = c.receive();
+    match (o) {
+      None() { false }
+      Some(s) {
+        return s!;
+      }
+    }
+  }
+
+  pub fn .count_neighbor_rolls(&roll: &Roll) -> N32 {
+    let total = 0;
+    for &(_, nb) in roll.nh.iter_ref() {
+      total += check_dir(&nb) as N32
+    }
+    total
+  }
+
+  pub fn send(&c: &Chan, s: RollState) {
+    c.send(s);
+  }
+
+  pub fn .notify(&roll: &Roll) {
+    for &(_, nb) in roll.nh.iter_ref() {
+      Roll::send(&nb, roll.state)
+    }
+  }
+
+  pub impl show: Show[Roll] {
+    fn show(&r: &Roll) -> Show {
+      let fn nr_to_str(o: Option[&Chan]) -> String {
+        match (o) {
+          None() { "+" }
+          Some(&c) {
+            match (c.receive()) {
+              None() { "x" }
+              Some(s) {
+                if (s!) {
+                  "#"
+                } else {
+                  "-"
+                }
+              }
+            }
+          }
+        }
+      }
+
+      let fn* roll_to_str() -> String {
+        if (r.state!) {
+          "@"
+        } else {
+          "."
+        }
+      }
+
+      let fn* dir_to_str(dir: Dir) -> String {
+        nr_to_str(r.nh.at(&dir))
+      }
+
+      let str = "";
+      str ++= "{r.nh.len()}:\n";
+      str ++= "\n";
+      str ++= "{dir_to_str(Dir::NW())}{dir_to_str(Dir::N_())}{dir_to_str(Dir::NE())}\n";
+      str ++= "{dir_to_str(Dir::W_())}{roll_to_str()}{dir_to_str(Dir::E_())}\n";
+      str ++= "{dir_to_str(Dir::SW())}{dir_to_str(Dir::S_())}{dir_to_str(Dir::SE())}\n";
+      str ++= "\n";
+
+      Show::Literal("{str}")
+    }
+  }
+}

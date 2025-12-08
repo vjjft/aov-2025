@@ -1,0 +1,108 @@
+
+use #util::Channel;
+use #root::ops::Cast;
+
+pub mod roll = "./roll.vi";
+use roll::{Chan, Roll, RollState};
+
+pub mod dir = "./dir.vi";
+use dir::Dir;
+
+pub struct? Floor(pub List[&List[&Roll]]);
+pub mod Floor {
+  pub fn parse_input(&io: &IO) -> Floor {
+    let floor = Floor([]);
+
+    let row_above: List[&Roll] = [];
+    let x_nw: Option[&Roll] = None();
+    let x_w_: Option[&Roll] = None();
+
+    let fn* init_roll(c: Char) {
+      let roll = Roll::parse_char_assume(c);
+
+      let x_n_ = row_above.pop_front();
+      let x_ne = row_above.get(0);
+      if x_nw is Some(&x_nw) {
+        let (a, b) = init_channel_pair();
+        roll.nh.insert(Dir::NW(), a);
+        x_nw.nh.insert(Dir::SE(), b);
+      }
+      if x_n_ is Some(&x_n_) {
+        let (a, b) = init_channel_pair();
+        roll.nh.insert(Dir::N_(), a);
+        x_n_.nh.insert(Dir::S_(), b);
+      }
+      if x_ne is Some(&x_ne) {
+        let (a, b) = init_channel_pair();
+        roll.nh.insert(Dir::NE(), a);
+        x_ne.nh.insert(Dir::SW(), b);
+      }
+      if x_w_ is Some(&x_w_) {
+        let (a, b) = init_channel_pair();
+        roll.nh.insert(Dir::W_(), a);
+        x_w_.nh.insert(Dir::E_(), b);
+      }
+
+      x_nw = x_n_;
+      x_w_ = Some(&roll);
+      &roll
+    }
+    while io.read_line() is Some(line) {
+      let row = [];
+      while line!.pop_front() is Some(c) {
+        row ++= [init_roll(c)]
+      }
+      x_nw = None();
+      x_w_ = None();
+      row_above = row
+      floor!.push_back(&row)
+    }
+    floor
+  }
+
+  pub fn .notify(&floor: &Floor) {
+    floor.apply(Roll::notify)
+  }
+
+  pub fn .apply[F*; fn F(&Roll) -> ()](&floor: &Floor, f: F) {
+    for &&row in floor!.iter_ref() {
+      for &roll in row.iter_ref() {
+        f(roll)
+      }
+    }
+  }
+
+  pub fn .count_can_lift(&floor: &Floor) -> N64 {
+    let count = 0[N64];
+    for &&row in floor!.iter_ref() {
+      for &roll in row.iter_ref() {
+        if !roll.*.state! {
+          continue;
+        }
+        if (4 > Roll::count_neighbor_rolls(roll)) {
+          count += 1
+        }
+      }
+    }
+    count
+  }
+
+  fn init_channel_pair() -> (Chan, Chan) {
+    Channel::new_pair[RollState]()
+  }
+
+  pub impl to_string: Cast[&Floor, String] {
+    fn cast(&floor: &Floor) -> String {
+      let str = "";
+      for &&row in floor!.iter_ref() {
+        for roll in row.iter() {
+          str!.push_back(roll as Char);
+        }
+        str!.push_back('\n');
+      }
+      str
+    }
+  }
+
+  pub impl show: Show[Floor];
+}
