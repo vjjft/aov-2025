@@ -74,10 +74,8 @@ pub mod Floor {
   }
 
   pub fn .apply[F*; fn F(&Roll) -> ()](&floor: &Floor, f: F) {
-    for &&row in floor!.grid.iter_ref() {
-      for &roll in row.iter_ref() {
-        f(roll)
-      }
+    for &roll in floor!.set.iter_ref() {
+      f(roll)
     }
   }
 
