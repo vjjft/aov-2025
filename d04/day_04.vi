@@ -1,10 +1,378 @@
 
-// use #util::{...};
+use #util::Channel;
+use #util::io::{log, out};
+use #root::ops::Cast;
+use #root::data::Map;
 
 pub fn main(&io: &IO) {
   let part1 = 0[N64];
   let part2 = 0[N64];
 
+  let floor = Floor::parse_input(&io);
+
+  // io.log(floor);
+  // io.out(&floor as String);
+
+  io.out(floor.show() as String)
+  floor.notify()
+  floor.notify()
+  floor.notify()
+  floor.notify()
+  floor.notify()
+  floor.notify()
+  floor.notify()
+  floor.notify()
+  floor.notify()
+  floor.notify()
+  io.out(floor.show() as String)
+  io.out("can lift: {floor.count_can_lift()}")
+
   io.println("Part 1: {part1}");
   io.println("Part 2: {part2}");
+}
+
+enum* Dir {
+  N_(),
+  S_(),
+  E_(),
+  W_(),
+  NW(),
+  NE(),
+  SW(),
+  SE(),
+}
+mod Dir {
+  use #root::ops::comparison::Ord::{Ord, Eq, Gt, Lt};
+  pub impl show: Show[Dir];
+  pub impl ord: Ord[Dir] {
+    fn cmp(&a: &Dir, &b: &Dir) -> Ord {
+      match (a) {
+        N_() {
+          match (b) {
+            N_() { Eq() }
+            S_() { Gt() }
+            E_() { Gt() }
+            W_() { Gt() }
+            NW() { Gt() }
+            NE() { Gt() }
+            SW() { Gt() }
+            SE() { Gt() }
+          }
+        }
+        S_() {
+          match (b) {
+            N_() { Lt() }
+            S_() { Eq() }
+            E_() { Gt() }
+            W_() { Gt() }
+            NW() { Gt() }
+            NE() { Gt() }
+            SW() { Gt() }
+            SE() { Gt() }
+          }
+        }
+        E_() {
+          match (b) {
+            N_() { Lt() }
+            S_() { Lt() }
+            E_() { Eq() }
+            W_() { Gt() }
+            NW() { Gt() }
+            NE() { Gt() }
+            SW() { Gt() }
+            SE() { Gt() }
+          }
+        }
+        W_() {
+          match (b) {
+            N_() { Lt() }
+            S_() { Lt() }
+            E_() { Lt() }
+            W_() { Eq() }
+            NW() { Gt() }
+            NE() { Gt() }
+            SW() { Gt() }
+            SE() { Gt() }
+          }
+        }
+        NW() {
+          match (b) {
+            N_() { Lt() }
+            S_() { Lt() }
+            E_() { Lt() }
+            W_() { Lt() }
+            NW() { Eq() }
+            NE() { Gt() }
+            SW() { Gt() }
+            SE() { Gt() }
+          }
+        }
+        NE() {
+          match (b) {
+            N_() { Lt() }
+            S_() { Lt() }
+            E_() { Lt() }
+            W_() { Lt() }
+            NW() { Lt() }
+            NE() { Eq() }
+            SW() { Gt() }
+            SE() { Gt() }
+          }
+        }
+        SW() {
+          match (b) {
+            N_() { Lt() }
+            S_() { Lt() }
+            E_() { Lt() }
+            W_() { Lt() }
+            NW() { Lt() }
+            NE() { Lt() }
+            SW() { Eq() }
+            SE() { Gt() }
+          }
+        }
+        SE() {
+          match (b) {
+            N_() { Lt() }
+            S_() { Lt() }
+            E_() { Lt() }
+            W_() { Lt() }
+            NW() { Lt() }
+            NE() { Lt() }
+            SW() { Lt() }
+            SE() { Eq() }
+          }
+        }
+      }
+    }
+    fn lt(&a: &Dir, &b: &Dir) -> Bool {
+      a < b
+    }
+    fn le(&a: &Dir, &b: &Dir) -> Bool {
+      a <= b
+    }
+  }
+}
+
+struct* RollState(Bool);
+mod RollState {
+  pub impl show: Show[RollState];
+}
+type Chan = Channel[RollState];
+type NH = Map[Dir, &Chan];
+mod NH {
+  pub fn new() -> NH {
+    Map::empty[Dir, &Chan]
+  }
+  pub impl show: Show[NH] {
+    fn show(_: &NH) -> Show {
+      Show::Literal("")
+    }
+  }
+}
+
+struct? Roll({ state: RollState, nh: NH });
+mod Roll {
+  pub fn parse_char(c: Char) -> Option[Roll] {
+    let state = RollState(when {
+      c == '@' { true }
+      c == '.' { false }
+      _ {
+        return None();
+      }
+    });
+    Some(Roll({ state, nh: NH::new() }))
+  }
+  pub fn parse_char_assume(c: Char) -> Roll {
+    parse_char(c).assume()
+  }
+  pub impl to_char: Cast[&Roll, Char] {
+    fn cast(&roll: &Roll) -> Char {
+      if roll.state! == true {
+        '@'
+      } else {
+        '.'
+      }
+    }
+  }
+  pub fn check_dir(&c: &Chan) -> Bool {
+    let o = c.get();
+    match (o) {
+      None() { false }
+      Some(s) {
+        return s!;
+      }
+    }
+  }
+
+  pub fn .count_neighbor_rolls(&roll: &Roll) -> N32 {
+    let total = 0;
+    for (_, nb) in roll.nh.iter() {
+      total += check_dir(nb) as N32
+    }
+    total.dbg()
+  }
+
+  pub fn send(&c: &Chan, s: RollState) {
+    c.send(s);
+  }
+
+  pub fn .notify(&roll: &Roll) {
+    for (_, nb) in roll.nh.iter() {
+      Roll::send(nb, roll.state)
+    }
+  }
+
+  // pub impl show: Show[Roll];
+  pub impl show: Show[Roll] {
+    fn show(&r: &Roll) -> Show {
+      let fn nr_to_str(o: Option[&Chan]) -> String {
+        match (o) {
+          None() { "+" }
+          Some(&c) {
+            match (c.get()) {
+              None() { "x" }
+              Some(s) {
+                if (s!) {
+                  "#"
+                } else {
+                  "-"
+                }
+              }
+            }
+          }
+        }
+      }
+
+      let fn* roll_to_str() -> String {
+        if (r.state!) {
+          "@"
+        } else {
+          "."
+        }
+      }
+
+      let fn* dir_to_str(dir: Dir) -> String {
+        nr_to_str(r.nh.get(&dir))
+      }
+
+      let str = "";
+      str ++= "{r.nh.len()}:\n";
+      str ++= "\n";
+      str ++= "{dir_to_str(Dir::NW())}{dir_to_str(Dir::N_())}{dir_to_str(Dir::NE())}\n";
+      str ++= "{dir_to_str(Dir::W_())}{roll_to_str()}{dir_to_str(Dir::E_())}\n";
+      str ++= "{dir_to_str(Dir::SW())}{dir_to_str(Dir::S_())}{dir_to_str(Dir::SE())}\n";
+      str ++= "\n";
+
+      Show::Literal("{str}")
+    }
+  }
+}
+
+struct? Floor(pub List[&List[&Roll]]);
+mod Floor {
+  pub fn parse_input(&io: &IO) -> Floor {
+    let floor = Floor([]);
+
+    let row_above: List[&Roll] = [];
+    let x_nw: Option[&Roll] = None();
+    let x_w_: Option[&Roll] = None();
+
+    let fn* init_roll(c: Char) {
+      let roll = Roll::parse_char_assume(c);
+
+      let x_n_ = row_above.pop_front();
+      let x_ne = row_above.get(0);
+      if x_nw is Some(&x_nw) {
+        let (a, b) = init_channel_pair();
+        roll.nh.insert(Dir::NW(), a);
+        x_nw.nh.insert(Dir::SE(), b);
+      }
+      if x_n_ is Some(&x_n_) {
+        // (x_n_.nh.s, roll.nh.n) = init_channel_pair()
+        let (a, b) = init_channel_pair();
+        roll.nh.insert(Dir::N_(), a);
+        x_n_.nh.insert(Dir::S_(), b);
+      }
+      if x_ne is Some(&x_ne) {
+        // (x_ne.nh.sw, roll.nh.ne) = init_channel_pair()
+        let (a, b) = init_channel_pair();
+        roll.nh.insert(Dir::NE(), a);
+        x_ne.nh.insert(Dir::SW(), b);
+      }
+      if x_w_ is Some(&x_w_) {
+        // (x_w_.nh.s, roll.nh.w) = init_channel_pair()
+        debug::dbg("=====")
+        debug::dbg((&x_w_, &roll));
+        let (a, b) = init_channel_pair();
+        roll.nh.insert(Dir::W_(), a);
+        x_w_.nh.insert(Dir::E_(), b);
+        debug::dbg((&x_w_, &roll));
+        debug::dbg((&x_w_, &roll));
+      }
+
+      x_nw = x_n_;
+      x_w_ = Some(&roll);
+      &roll
+    }
+    while io.read_line() is Some(line) {
+      let row = [];
+      // debug::dbg(row_above);
+      while line!.pop_front() is Some(c) {
+        row ++= [init_roll(c)]
+      }
+      x_nw = None();
+      x_w_ = None();
+      // debug::dbg(row);
+      row_above = row
+      floor!.push_back(&row)
+    }
+    floor
+  }
+
+  pub fn .notify(&floor: &Floor) {
+    floor.apply(Roll::notify)
+  }
+
+  pub fn .apply[F*; fn F(&Roll) -> ()](&floor: &Floor, f: F) {
+    for &&row in floor!.iter_ref() {
+      for &roll in row.iter_ref() {
+        f(roll)
+      }
+    }
+  }
+
+  pub fn .count_can_lift(&floor: &Floor) -> N32 {
+    let count = 0;
+    for &&row in floor!.iter_ref() {
+      for &roll in row.iter_ref() {
+        if !roll.*.state! {
+          continue;
+        }
+        if (4 > Roll::count_neighbor_rolls(roll)) {
+          count += 1
+        }
+      }
+    }
+    count
+  }
+
+  fn init_channel_pair() -> (&Chan, &Chan) {
+    Channel::new_pair[RollState]()
+  }
+
+  pub impl to_string: Cast[&Floor, String] {
+    fn cast(&floor: &Floor) -> String {
+      let str = "";
+      for &&row in floor!.iter_ref() {
+        for roll in row.iter() {
+          str!.push_back(roll as Char);
+        }
+        str!.push_back('\n');
+      }
+      str
+    }
+  }
+
+  pub impl show: Show[Floor];
 }

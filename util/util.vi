@@ -90,3 +90,40 @@ pub mod list {
     }
   }
 }
+
+pub struct Channel[M]((Option[M], ~Option[M]));
+
+pub mod Channel {
+  pub fn .send[M*](&Channel[M](got, ~out), value: M) -> Option[M] {
+    out = Some(value);
+    got
+  }
+
+  pub fn .get[M+](&Channel[M](i, _)) -> Option[M] {
+    i
+  }
+  pub fn new_pair[M?]() -> (&Channel[M], &Channel[M]) {
+    let (a, b) = (None(), None());
+    (&Channel(a, ~b), &Channel(b, ~a))
+  }
+  pub impl drop[M?]: Drop[Channel[M]] {
+    fn drop(c: Channel[M]) {
+      let Channel(i, ~o) = c;
+      i.drop();
+      o = None();
+    }
+  }
+  pub impl show[M; Show[M]]: Show[Channel[M]] {
+    fn show(&c: &Channel[M]) -> Show {
+      Show::Tuple([c.0.show(), Show::Literal("~")])
+    }
+  }
+
+  // pub impl fork[M+]: Fork[Channel[M]] {
+  //   fn fork(&c: &Channel[M]) -> Channel[M] {
+  //     let Channel(i, _) = c;
+  //     let x
+  //     Channel(i.fork(), x)
+  //   }
+  // }
+}
