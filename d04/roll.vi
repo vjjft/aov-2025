@@ -78,9 +78,9 @@ pub mod Roll {
         match (o) {
           None() { "+" }
           Some(&c) {
-            match (c.receive()) {
+            match (c.peek()) {
               None() { "x" }
-              Some(s) {
+              Some(&s) {
                 if (s!) {
                   "#"
                 } else {
