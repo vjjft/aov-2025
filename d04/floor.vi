@@ -102,9 +102,13 @@ pub mod Floor {
   pub impl to_string: Cast[&Floor, String] {
     fn cast(&floor: &Floor) -> String {
       let str = "";
+      let fn* roll_char(&roll: &Roll) {
+        str!.push_back(&roll as Char);
+      }
+
       for &&row in floor!.grid.iter_ref() {
         for roll in row.iter() {
-          str!.push_back(roll as Char);
+          roll_char(roll)
         }
         str!.push_back('\n');
       }
