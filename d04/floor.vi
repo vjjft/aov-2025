@@ -1,7 +1,7 @@
 
 use #util::Channel;
 use #root::ops::Cast;
-use #root::data::Set;
+use #root::data::Map;
 
 pub mod roll = "./roll.vi";
 use roll::{Chan, Roll, RollState};
@@ -9,10 +9,10 @@ use roll::{Chan, Roll, RollState};
 pub mod dir = "./dir.vi";
 use dir::Dir;
 
-pub struct? Floor(pub { grid: List[&List[Option[&Roll]]], set: Set[&Roll] });
+pub struct? Floor(pub { grid: List[&List[Option[&Roll]]], map: Map[N64, &Roll] });
 pub mod Floor {
   pub fn parse_input(&io: &IO) -> Floor {
-    let floor = Floor({ grid: [], set: Set::empty });
+    let floor = Floor({ grid: [], map: Map::empty[N64, &Roll] });
 
     let row_above: List[Option[&Roll]] = [];
     let x_nw: Option[&Roll] = None();
@@ -69,7 +69,7 @@ pub mod Floor {
         assert opt_roll is Some(roll) else {
           continue;
         }
-        floor!.set.insert(&roll);
+        floor!.map.insert(roll!.id.assume(), &roll);
       }
       x_nw = None();
       x_w_ = None();
@@ -84,8 +84,8 @@ pub mod Floor {
   }
 
   pub fn .apply[F*; fn F(&Roll) -> ()](&floor: &Floor, f: F) {
-    for &roll in floor!.set.iter_ref() {
-      f(roll)
+    for &(_, &roll) in floor!.map.iter_ref() {
+      f(&roll)
     }
   }
 
