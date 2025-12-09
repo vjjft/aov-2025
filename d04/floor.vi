@@ -74,7 +74,7 @@ pub mod Floor {
       x_nw = None();
       x_w_ = None();
       row_above = row
-      floor!.grid.push_back(&row)
+      // floor!.grid.push_back(&row)
     }
     floor
   }
