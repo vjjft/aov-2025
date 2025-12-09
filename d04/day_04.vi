@@ -12,6 +12,17 @@ pub fn main(&io: &IO) {
   floor.notify()
   part1 = floor.count_can_lift()
 
+  let total = 0[N64];
+  loop {
+    floor.notify();
+    let lifted = floor.lift();
+    total += lifted;
+    if lifted > 0[N64] {
+      continue;
+    };
+  }
+
+  part2 = total;
   io.println("Part 1: {part1}");
   io.println("Part 2: {part2}");
 }

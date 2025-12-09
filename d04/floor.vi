@@ -103,6 +103,22 @@ pub mod Floor {
     count
   }
 
+  pub fn .lift(&floor: &Floor) -> N64 {
+    let count = 0[N64];
+    let fn* try_lift(&roll: &Roll) {
+      if !roll.state! {
+        return;
+      }
+      if (4 > roll.count_neighbor_rolls()) {
+        roll!.state! = false;
+        // floor!.map.remove(&roll!.id.assume());
+        count += 1
+      }
+    }
+    floor.apply(try_lift)
+    count
+  }
+
   fn init_channel_pair() -> (Chan, Chan) {
     Channel::new_pair[RollState]()
   }
