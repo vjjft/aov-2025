@@ -105,7 +105,7 @@ pub mod Roll {
       }
 
       let str = "";
-      str ++= "{r.nh.len()}:\n";
+      str ++= "#{r.id.assume()}: ({r.nh.len()})\n";
       str ++= "\n";
       str ++= "{dir_to_str(Dir::NW())}{dir_to_str(Dir::N_())}{dir_to_str(Dir::NE())}\n";
       str ++= "{dir_to_str(Dir::W_())}{roll_to_str()}{dir_to_str(Dir::E_())}\n";
