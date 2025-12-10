@@ -84,7 +84,7 @@ pub mod Floor {
   }
 
   pub fn .apply[F*; fn F(&Roll) -> ()](&floor: &Floor, f: F) {
-    for &(_, &roll) in floor!.map.iter_ref() {
+    for &(_, &roll) in floor.map.iter_ref() {
       f(&roll)
     }
   }
@@ -135,7 +135,7 @@ pub mod Floor {
         str!.push_back(char);
       }
       for &&row in floor!.grid.iter_ref() {
-        for roll in row.iter() {
+        for roll in row...map() {
           roll_char(roll)
         }
         str!.push_back('\n');

@@ -18,7 +18,7 @@ pub fn main(&io: &IO) {
     passes += spins;
 
     let start = position;
-    let temp = position as I32;
+    let temp = position[I32];
 
     temp += delta % +100;
 
@@ -32,7 +32,7 @@ pub fn main(&io: &IO) {
       }
     }
 
-    position = ((temp + +100) % +100) as N32;
+    position = ((temp + +100) % +100)[N32];
 
     if (position == 0) {
       hits += 1;
