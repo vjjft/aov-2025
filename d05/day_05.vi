@@ -53,16 +53,16 @@ pub fn main(&io: &IO) {
   let total_fresh = 0[N64];
   let high_end = 0[N64];
   while range_.pop_front() is Some((start, end)) {
-    io.log((start, end))
+    // io.log((start, end))
 
     if (end <= high_end) {
-      io.out("skip")
+      // io.out("skip")
       continue;
     }
     let high_start = start.max(high_end + 1);
 
     let good = (end - high_start) + 1;
-    io.out("good: {good}")
+    // io.out("good: {good}")
     total_fresh += good
     high_end = end;
   }
