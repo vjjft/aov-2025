@@ -26,8 +26,10 @@ pub fn main(&io: &IO) {
   range_.sort()
   id_.sort()
 
-  io.log(range_);
-  io.log(id_);
+  // io.log(range_);
+  // io.log(id_);
+
+  let range_copy_ = range_;
 
   let count_fresh = 0[N64];
   while.range range_.pop_front() is Some((start, end)) {
@@ -46,7 +48,26 @@ pub fn main(&io: &IO) {
   }
 
   let part1 = count_fresh;
-  let part2 = 0[N64];
+
+  let range_ = range_copy_;
+  let total_fresh = 0[N64];
+  let high_end = 0[N64];
+  while range_.pop_front() is Some((start, end)) {
+    io.log((start, end))
+
+    if (end <= high_end) {
+      io.out("skip")
+      continue;
+    }
+    let high_start = start.max(high_end + 1);
+
+    let good = (end - high_start) + 1;
+    io.out("good: {good}")
+    total_fresh += good
+    high_end = end;
+  }
+
+  let part2 = total_fresh;
 
   io.println("Part 1: {part1}");
   io.println("Part 2: {part2}");
