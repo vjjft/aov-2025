@@ -1,10 +1,51 @@
 
-// use #util::{...};
+use #util::io::{log, out};
 
 pub fn main(&io: &IO) {
-  let input = io.full_input();
+  let range_ = [];
+  let id_ = [];
+  while io.read_line() is Some(str) {
+    if (str == "") {
+      break;
+    }
+    assert str.split_once("-") is (start, Some(end)) else { debug::error("bad range: {str}") }
+    assert N64::parse(start) is Some(start) else { debug::error("bad start: {start}") }
+    assert N64::parse(end) is Some(end) else { debug::error("bad end: {end}") }
 
-  let part1 = 0[N64];
+    range_ ++= [(start, end)]
+  }
+  // io.out("---")
+  while io.read_line() is Some(str) {
+    assert N64::parse(str) is Some(id) else { debug::error("bad id: {str}") }
+
+    id_ ++= [id];
+  }
+  // io.out("{range_.len()}")
+  // io.out("{id_.len()}")
+
+  range_.sort()
+  id_.sort()
+
+  io.log(range_);
+  io.log(id_);
+
+  let count_fresh = 0[N64];
+  while.range range_.pop_front() is Some((start, end)) {
+    while id_.pop_front() is Some(id) {
+      if (id < start) {
+        // io.out("spoil: {id}")
+        continue;
+      }
+      if (id > end) {
+        id_.push_front(id)
+        continue.range;
+      }
+      // io.out("fresh: {id}")
+      count_fresh += 1;
+    }
+  }
+
+  let part1 = count_fresh;
   let part2 = 0[N64];
 
   io.println("Part 1: {part1}");
