@@ -33,7 +33,7 @@ fn part2(input: List[String]) -> N64 {
       problem_op = op;
     }
 
-    let str = String([a, b, c, d]);
+    let str = String([a, b, c, d].filter(fn* (&c: &Char) { c != ' ' }));
     if (str == "    ") {
       // debug::log({ problem_op, problem_num_ }.show() as String)
       let result = if (problem_op == '+') {
@@ -48,7 +48,7 @@ fn part2(input: List[String]) -> N64 {
       continue;
     }
     // debug::log("|{str}|")
-    let num = N64::parse(str.trim()).assume();
+    let num = N64::parse(str).assume();
     problem_num_.push_back(num);
     // debug::log("{num}")
   }
