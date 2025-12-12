@@ -7,11 +7,52 @@ pub fn main(&io: &IO) {
     input.push_back(line);
   }
 
-  let part1 = part1(input);
-  let part2 = 0;
+  // let part1 = part1(input);
+  // io.println("Part 1: {part1}");
 
-  io.println("Part 1: {part1}");
+  let part2 = part2(input);
   io.println("Part 2: {part2}");
+}
+fn part2(input: List[String]) -> N64 {
+  let a_ = input.pop_front().assume() ++ " ";
+  let b_ = input.pop_front().assume() ++ " ";
+  let c_ = input.pop_front().assume() ++ " ";
+  let d_ = input.pop_front().assume() ++ " ";
+  let op_ = input.pop_front().assume() ++ " ";
+
+  let problem_op = ' ';
+  let problem_num_: List[N64] = [];
+  let total = 0[N64];
+  while op_!.pop_front() is Some(op) {
+    let a = a_!.pop_front().assume();
+    let b = b_!.pop_front().assume();
+    let c = c_!.pop_front().assume();
+    let d = d_!.pop_front().assume();
+
+    if (op != ' ') {
+      problem_op = op;
+    }
+
+    let str = String([a, b, c, d]);
+    if (str == "    ") {
+      // debug::log({ problem_op, problem_num_ }.show() as String)
+      let result = if (problem_op == '+') {
+        // debug::log("adding")
+        problem_num_.iter().fold(0[N64], fn* (a: N64, x: N64) { a + x })
+      } else {
+        problem_num_.iter().fold(1[N64], fn* (a: N64, x: N64) { a * x })
+      };
+      // debug::log("= {result}")
+      total += result;
+      problem_num_ = [];
+      continue;
+    }
+    // debug::log("|{str}|")
+    let num = N64::parse(str.trim()).assume();
+    problem_num_.push_back(num);
+    // debug::log("{num}")
+  }
+  total
 }
 
 fn part1(input: List[String]) -> N64 {
@@ -44,5 +85,5 @@ fn part1(input: List[String]) -> N64 {
     total += result;
     problem_ ++= [(a, b, c, op, result)];
   }
-  return total;
+  total
 }
