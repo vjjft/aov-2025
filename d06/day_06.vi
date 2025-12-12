@@ -7,8 +7,8 @@ pub fn main(&io: &IO) {
     input.push_back(line);
   }
 
-  // let part1 = part1(input);
-  // io.println("Part 1: {part1}");
+  let part1 = part1(input);
+  io.println("Part 1: {part1}");
 
   let part2 = part2(input);
   io.println("Part 2: {part2}");
