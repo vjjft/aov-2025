@@ -1,12 +1,42 @@
 
-// use #util::{...};
+use #util::io::{log, out};
 
 pub fn main(&io: &IO) {
-  let input = io.full_input();
+  let sheet = [];
+  while io.read_line() is Some(str) {
+    let split_ = str.split(" ");
+    let row_ = split_.filter(fn* (&s: &String) { s != "" });
 
-  io.print(input);
+    io.log(row_)
 
-  let part1 = 0;
+    io.out("len:{row_.len()}")
+    sheet ++= [row_];
+  }
+
+  let a_ = sheet.pop_front().assume();
+  let b_ = sheet.pop_front().assume();
+  let c_ = sheet.pop_front().assume();
+  let d_ = sheet.pop_front().assume();
+  let op_ = sheet.pop_front().assume();
+
+  let total = 0[N64];
+  let problem_ = [];
+  while op_.pop_front() is Some(op) and op!.pop_front() is Some(op) {
+    let a = N64::parse(a_.pop_front().assume()).assume();
+    let b = N64::parse(b_.pop_front().assume()).assume();
+    let c = N64::parse(c_.pop_front().assume()).assume();
+    let d = N64::parse(d_.pop_front().assume()).assume();
+    let result: N64 = if (op == '+') {
+      a + b + c + d
+    } else {
+      a * b * c * d
+    };
+    total += result;
+    problem_ ++= [(a, b, c, op, result)];
+  }
+  io.log(problem_)
+
+  let part1 = total;
   let part2 = 0;
 
   io.println("Part 1: {part1}");
