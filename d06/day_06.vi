@@ -2,14 +2,24 @@
 use #util::io::{log, out};
 
 pub fn main(&io: &IO) {
+  let input = [];
+  while io.read_line() is Some(line) {
+    input.push_back(line);
+  }
+
+  let part1 = part1(input);
+  let part2 = 0;
+
+  io.println("Part 1: {part1}");
+  io.println("Part 2: {part2}");
+}
+
+fn part1(input: List[String]) -> N64 {
   let sheet = [];
-  while io.read_line() is Some(str) {
+  while input.pop_front() is Some(str) {
     let split_ = str.split(" ");
     let row_ = split_.filter(fn* (&s: &String) { s != "" });
 
-    io.log(row_)
-
-    io.out("len:{row_.len()}")
     sheet ++= [row_];
   }
 
@@ -34,11 +44,5 @@ pub fn main(&io: &IO) {
     total += result;
     problem_ ++= [(a, b, c, op, result)];
   }
-  io.log(problem_)
-
-  let part1 = total;
-  let part2 = 0;
-
-  io.println("Part 1: {part1}");
-  io.println("Part 2: {part2}");
+  return total;
 }
