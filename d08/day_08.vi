@@ -1,12 +1,55 @@
 
-// use #util::{...};
+pub use #util::io::{log, out};
+use #root::data::Map;
 
 pub fn main(&io: &IO) {
-  let input = io.full_input();
+  // let limit = 1000;
+  let limit = 10;
+
+  let box_ = [];
+  let pairMap = Map::empty;
+  let p = 0;
+  let n = 0;
+  while io.read_line() is Some(line) {
+    let val_ = line.split(",");
+    let x = N64::parse(val_.get(0).assume()).assume();
+    let y = N64::parse(val_.get(1).assume()).assume();
+    let z = N64::parse(val_.get(2).assume()).assume();
+    let box = (n, x, y, z);
+    for alt in box_ {
+      p += 1
+      let (m, a, b, c) = alt;
+      let dist = a.diff(x) ** 2 + b.diff(y) ** 2 + c.diff(z) ** 2;
+      let target = pairMap.at_or_insert(dist, List::empty[(N32, N32)]);
+      target.* ++= [(m, n)];
+      if p > limit {
+        pairMap.remove_max();
+      }
+    }
+    n += 1;
+    box_ ++= [box];
+  }
+  // io.log(box_)
+  // io.log(box_.len())
+
+  let pair_ = List::empty[(N32, N32)];
+  for (_, pairs) in pairMap {
+    pair_ ++= pairs;
+  }
+  io.log(pair_)
+  // io.log(pair_.len())
 
   let part1 = 0;
-  io.println("Part 1: {part1}");
-
   let part2 = 0;
+
+  io.println("Part 1: {part1}");
   io.println("Part 2: {part2}");
+}
+
+fn .diff(a: N64, b: N64) -> N64 {
+  if (a < b) {
+    b - a
+  } else {
+    a - b
+  }
 }
