@@ -1,12 +1,63 @@
 
-// use #util::{...};
+pub use #util::io::{log, out};
+pub use #util::list::{intersect, subtract, union, unique};
 
 pub fn main(&io: &IO) {
-  let input = io.full_input();
+  let first_line = io.read_line().assume();
+  let width = first_line.len();
+  let center = width / 2;
+  let char = first_line!.get(center).assume();
+  io.log({ width, char })
+  let i = 0;
+  let beam_ = [center];
+  io.read_line()
+  let start = center;
+  let size = 1;
+  let splitter__ = [];
+  while io.read_line() is Some(line) {
+    let (_, scan) = line.split_at(start);
+    let splitter_ = [];
+    for i in 0..size {
+      let char = scan!.pop_front().assume();
+      if (char == '^') {
+        splitter_ ++= [start + i]
+      }
+    }
+    splitter__ ++= [splitter_]
+    io.out(scan);
 
-  let part1 = 0;
+    size += 2;
+    start -= 1;
+
+    io.read_line();
+  }
+  io.log(splitter__)
+
+  let hit_total = 0;
+  for splitter_ in splitter__ {
+    io.log({ beam_, splitter_ })
+    let miss_ = beam_.subtract(&splitter_);
+    let hit_ = beam_.intersect(&splitter_);
+    hit_total += hit_.len();
+
+    io.log({ miss_, hit_ })
+    let pair_ = [];
+    for hit in hit_ {
+      pair_ ++= [hit - 1, hit + 1]
+    }
+
+    let split_ = pair_.unique();
+    io.log({ pair_, split_ })
+
+    let result_ = miss_.union(&split_);
+    io.log({ result_ })
+
+    beam_ = result_
+  }
+
+  let part1 = hit_total;
+  let part2 = 0[N64];
+
   io.println("Part 1: {part1}");
-
-  let part2 = 0;
   io.println("Part 2: {part2}");
 }
