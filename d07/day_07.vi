@@ -44,6 +44,7 @@ pub fn main(&io: &IO) {
       assert beams.remove(&splitter) is Some(num) else {
         continue;
       }
+      hit_total += 1;
       io.log(beams)
       // let fn* split_to(x: N32) {
       //   beams.insert(x, num + beams.get(&x).or_use(0));
