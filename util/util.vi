@@ -172,7 +172,7 @@ pub mod list {
     b_ = r_;
     d_
   }
-  pub fn .unique[T; Eq[T], Fork[T], Drop[T]](&a_: &List[T]) -> List[T] {
+  pub fn .unique[T*; Eq[T]](&a_: &List[T]) -> List[T] {
     use #root::ops::comparison::Eq;
     if a_.len() == 0 {
       return [];
@@ -188,38 +188,6 @@ pub mod list {
     }
     u_
   }
-  // pub fn unique[T; Eq[T], Fork[T]](&a_: &List[T]) -> List[T] {
-  //   use #root::ops::comparison::Eq;
-  //   use #root::ops::flex::Fork;
-  //   assert a_.at(0) is Some(z) else {
-  //     return [];
-  //   }
-  //   let u_ = [z.*];
-  //   for &a in &a_ {
-  //     if a == z.* {
-  //       continue;
-  //     }
-  //     u_ ++= [a.fork()];
-  //     z = &a;
-  //   }
-  //   u_
-  // }
-  // pub fn unique[T; Eq[T], Fork[T]](&a_: &List[T]) -> List[T] {
-  //   use #root::ops::comparison::Eq;
-  //   use #root::ops::flex::Fork;
-  //   assert a_.at(0) is Some(_z) else {
-  //     return [];
-  //   }
-  //   let u_ = [_z.*];
-  //   for _a in &a_ {
-  //     if _a.* == _z.* {
-  //       continue;
-  //     }
-  //     u_ ++= [_a.*.fork()];
-  //     _z = _a;
-  //   }
-  //   u_
-  // }
 }
 
 pub enum? Stream[M] {
