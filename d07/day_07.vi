@@ -8,8 +8,6 @@ pub fn main(&io: &IO) {
   let center = width / 2;
   let char = first_line!.get(center).assume();
   io.log({ width, char })
-  let i = 0;
-  let beam_ = [center];
   io.read_line()
   let start = center;
   let size = 1;
@@ -32,6 +30,8 @@ pub fn main(&io: &IO) {
     io.read_line();
   }
   io.log(splitter__)
+
+  let beam_ = [center];
 
   let hit_total = 0;
   for splitter_ in splitter__ {
