@@ -89,6 +89,137 @@ pub mod list {
       Ok(Some(value))
     }
   }
+
+  pub fn .intersect[T; Ord[T], Fork[T]](&a_: &List[T], &b_: &List[T]) -> List[T] {
+    use #root::ops::comparison::Ord::{Ord, Eq, Lt};
+    use #root::ops::flex::Fork;
+    let c_ = [];
+    let r_ = [];
+    for.outer &a in &a_ {
+      while b_.pop_front() is Some(b) {
+        let cmp = Ord::cmp(&a, &b);
+        match cmp {
+          Eq() {
+            c_ ++= [a.fork()];
+            r_ ++= [b]
+          }
+          Lt() {
+            b_.push_front(b);
+            continue.outer;
+          }
+          _ { r_ ++= [b] }
+        }
+      }
+    }
+    r_ ++= b_;
+    b_ = r_;
+    c_
+  }
+  pub fn .union[T; Ord[T], Fork[T]](&a_: &List[T], &b_: &List[T]) -> List[T] {
+    use #root::ops::comparison::Ord::{Ord, Eq, Lt};
+    use #root::ops::flex::Fork;
+    let d_ = [];
+    let r_ = [];
+    for.outer &a in &a_ {
+      while b_.pop_front() is Some(b) {
+        let cmp = Ord::cmp(&a, &b);
+        match cmp {
+          Eq() {
+            d_ ++= [a.fork()];
+            r_ ++= [b];
+            continue.outer;
+          }
+          Lt() {
+            d_ ++= [a.fork()];
+            b_.push_front(b);
+            continue.outer;
+          }
+          _ {
+            d_ ++= [b]
+            r_ ++= [b]
+          }
+        }
+      }
+    }
+    d_ ++= b_.fork();
+    r_ ++= b_;
+    b_ = r_;
+    d_
+  }
+  pub fn .subtract[T; Ord[T], Fork[T]](&a_: &List[T], &b_: &List[T]) -> List[T] {
+    use #root::ops::comparison::Ord::{Ord, Eq, Lt};
+    use #root::ops::flex::Fork;
+    let d_ = [];
+    let r_ = [];
+    for.outer &a in &a_ {
+      while b_.pop_front() is Some(b) {
+        let cmp = Ord::cmp(&a, &b);
+        match cmp {
+          Eq() {
+            r_ ++= [b];
+            continue.outer;
+          }
+          Lt() {
+            d_ ++= [a.fork()];
+            b_.push_front(b);
+            continue.outer;
+          }
+          _ { r_ ++= [b] }
+        }
+      }
+    }
+    r_ ++= b_;
+    b_ = r_;
+    d_
+  }
+  pub fn .unique[T; Eq[T], Fork[T], Drop[T]](&a_: &List[T]) -> List[T] {
+    use #root::ops::comparison::Eq;
+    if a_.len() == 0 {
+      return [];
+    }
+    let z = a_.get(0).assume();
+    let u_ = [z];
+    for a in a_ {
+      if a == z {
+        continue;
+      }
+      u_ ++= [a];
+      z = a;
+    }
+    u_
+  }
+  // pub fn unique[T; Eq[T], Fork[T]](&a_: &List[T]) -> List[T] {
+  //   use #root::ops::comparison::Eq;
+  //   use #root::ops::flex::Fork;
+  //   assert a_.at(0) is Some(z) else {
+  //     return [];
+  //   }
+  //   let u_ = [z.*];
+  //   for &a in &a_ {
+  //     if a == z.* {
+  //       continue;
+  //     }
+  //     u_ ++= [a.fork()];
+  //     z = &a;
+  //   }
+  //   u_
+  // }
+  // pub fn unique[T; Eq[T], Fork[T]](&a_: &List[T]) -> List[T] {
+  //   use #root::ops::comparison::Eq;
+  //   use #root::ops::flex::Fork;
+  //   assert a_.at(0) is Some(_z) else {
+  //     return [];
+  //   }
+  //   let u_ = [_z.*];
+  //   for _a in &a_ {
+  //     if _a.* == _z.* {
+  //       continue;
+  //     }
+  //     u_ ++= [_a.*.fork()];
+  //     _z = _a;
+  //   }
+  //   u_
+  // }
 }
 
 pub enum? Stream[M] {
