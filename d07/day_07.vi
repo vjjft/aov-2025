@@ -1,6 +1,7 @@
 
 pub use #util::io::{log, out};
 pub use #util::list::{intersect, subtract, union, unique};
+use #root::data::Map;
 
 pub fn main(&io: &IO) {
   let first_line = io.read_line().assume();
@@ -31,32 +32,60 @@ pub fn main(&io: &IO) {
   }
   io.log(splitter__)
 
-  let beam_ = [center];
+  let beams = Map::empty;
+  beams.insert(center, 1[N64]);
+  io.log({ beams })
 
   let hit_total = 0;
   for splitter_ in splitter__ {
-    io.log({ beam_, splitter_ })
-    let miss_ = beam_.subtract(&splitter_);
-    let hit_ = beam_.intersect(&splitter_);
-    hit_total += hit_.len();
+    io.log(splitter_)
+    for splitter in splitter_ {
+      io.log(beams)
+      assert beams.remove(&splitter) is Some(num) else {
+        continue;
+      }
+      io.log(beams)
+      // let fn* split_to(x: N32) {
+      //   beams.insert(x, num + beams.get(&x).or_use(0));
+      // }
+      // split_to(splitter - 1);
+      // split_to(splitter + 1);
+      let x = splitter - 1;
+      let cur = beams.get(&x).or_use(0[N64]);
+      beams.insert(x, num + cur);
 
-    io.log({ miss_, hit_ })
-    let pair_ = [];
-    for hit in hit_ {
-      pair_ ++= [hit - 1, hit + 1]
+      let x = splitter + 1;
+      let cur = beams.get(&x).or_use(0[N64]);
+      beams.insert(x, num + cur);
+      io.log(beams)
+
+      // beams.insert(num + beams.get())
+      // beams.get(splitter)
     }
+    io.log(beams)
+    // io.log({ beam_, splitter_ })
+    // let miss_ = beam_.subtract(&splitter_);
+    // let hit_ = beam_.intersect(&splitter_);
+    // hit_total += hit_.len();
 
-    let split_ = pair_.unique();
-    io.log({ pair_, split_ })
+    // io.log({ miss_, hit_ })
+    // let pair_ = [];
+    // for hit in hit_ {
+    //   pair_ ++= [hit - 1, hit + 1]
+    // }
 
-    let result_ = miss_.union(&split_);
-    io.log({ result_ })
+    // let split_ = pair_.unique();
+    // io.log({ pair_, split_ })
 
-    beam_ = result_
+    // let result_ = miss_.union(&split_);
+    // io.log({ result_ })
+
+    // beam_ = result_
   }
+  let beam_total = beams.iter().fold(0[N64], fn* (count: N64, (_, num: N64)) { count + num });
 
   let part1 = hit_total;
-  let part2 = 0[N64];
+  let part2 = beam_total;
 
   io.println("Part 1: {part1}");
   io.println("Part 2: {part2}");
