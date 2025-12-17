@@ -1,10 +1,12 @@
 
-pub use #util::io::{log, out};
+// use #util::io::{log as _, out as _};
+use #util::io::log as _;
+// use #util::io;
 use #root::data::Map;
 
 pub fn main(&io: &IO) {
-  // let limit = 1000;
-  let limit = 10;
+  let limit = 1000;
+  // let limit = 10;
 
   let box_ = [];
   let pairMap = Map::empty;
@@ -32,14 +34,44 @@ pub fn main(&io: &IO) {
   // io.log(box_)
   // io.log(box_.len())
 
+  let d = DisjointSet::empty[N32];
   let pair_ = List::empty[(N32, N32)];
   for (_, pairs) in pairMap {
     pair_ ++= pairs;
   }
   io.log(pair_)
   // io.log(pair_.len())
+  for (a, b) in pair_ {
+    // d.union_sets(&a, &b)
+    d.union_sets(&a, &b)
+  }
+  io.log(d!.parent_)
 
-  let part1 = 0;
+  let c = Map::empty[N32, N32];
+  for (x, _) in d!.parent_ {
+    let p = d.find_set(&x);
+    let n = c.get(&p).or_use(0);
+    c.insert(p, n + 1);
+  }
+  io.log(c)
+
+  let c_ = [];
+  for (_, c) in c {
+    c_ ++= [c]
+  }
+  io.log(c_)
+  c_.sort();
+  io.log(c_)
+  c_.reverse();
+  io.log(c_)
+  assert (c_.pop_front(), c_.pop_front(), c_.pop_front()) is (Some(a), Some(b), Some(c)) else {}
+
+  io.log({ a, b, c })
+
+  let product = a * b * c;
+  io.log(product);
+
+  let part1 = product;
   let part2 = 0;
 
   io.println("Part 1: {part1}");
@@ -51,5 +83,31 @@ fn .diff(a: N64, b: N64) -> N64 {
     b - a
   } else {
     a - b
+  }
+}
+
+struct* DisjointSet[N]({ parent_: Map[N, N] });
+mod DisjointSet[N*; Ord[N]] {
+  use #root::ops::comparison::Ord;
+  pub const empty[N]: DisjointSet[N] = DisjointSet({ parent_: Map::empty[N, N] });
+  fn .make_set[...](&self: &DisjointSet[N], n: N) {
+    self!.parent_.insert(n, n);
+  }
+  pub fn .find_set[...](&self: &DisjointSet[N], &n: &N) -> N {
+    assert self!.parent_.get(&n) is Some(p) else {
+      self.make_set(n);
+      n
+    }
+    if n.cmp(&p) is Ord::Eq() {
+      return n;
+    }
+    self.find_set(&p)
+  }
+  pub fn .union_sets[...](&self: &DisjointSet[N], &a: &N, &b: &N) {
+    let x = self.find_set(&a);
+    let y = self.find_set(&b);
+    if !(x.cmp(&y) is Ord::Eq()) {
+      self!.parent_.insert(x, y);
+    }
   }
 }

@@ -1,0 +1,10 @@
+
+pub fn main(&io: &IO) {
+  let result = io.prompt("What's your name?");
+  let name = if result is Some(name) {
+    name
+  } else {
+    "(nobody)"
+  };
+  io.println("Hello, {name}!");
+}

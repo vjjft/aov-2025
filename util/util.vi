@@ -2,6 +2,7 @@
 use #root::debug::Show;
 
 pub mod io {
+  pub use log as _;
   pub fn .log[T?; Show[T]](&io: &IO, item: T) {
     io.println(item.show() as String)
   }
