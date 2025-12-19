@@ -14,14 +14,11 @@ pub fn main(&io: &IO) {
     let box = (x, y, z);
     box_ ++= [box];
   }
-  io.log(box_)
   let box_arr = box_ as Array;
   let box_count = box_.len();
-  io.log({ box_count })
   let pair_ = [];
   let i = 0;
   while box_.pop_front() is Some(box) {
-    // io.log(box)
     let (x, y, z) = box;
     let a = i;
     let b = i;
@@ -33,13 +30,7 @@ pub fn main(&io: &IO) {
       pair_ ++= [BoxPair({ a, b, dist })];
     }
   }
-  // io.log(pair_)
   pair_.sort();
-  // io.log(pair_)
-  // return;
-  // pair_.reverse();
-  // io.log(pair_)
-  // return;
 
   let part1: N32 = 0;
   let part2: N64 = 0[N64];
@@ -50,28 +41,18 @@ pub fn main(&io: &IO) {
     1000
   };
 
-  io.log({ checkpoint })
   let d = DisjointSet::empty[N32];
   let n = 0;
-  io.log(pair_)
   for BoxPair({ a, b, dist: _ }) in pair_ {
-    io.log({ a, b })
     n += 1;
     let s = d.union_sets(&a, &b);
-    io.log({ s });
     if (n == checkpoint) {
-      io.log("Checkpoint!!!!!!!!!!!")
       let c_ = d!.size_.values().collect[List, _, _]();
       c_.sort();
       c_.reverse();
-      // io.log(c_);
-      // break;
       assert (c_.pop_front(), c_.pop_front(), c_.pop_front()) is (Some(&a), Some(&b), Some(&c)) else {}
 
-      io.log({ a, b, c })
-
       let product = a * b * c;
-      io.log({ product });
 
       part1 = product;
     }
@@ -83,7 +64,6 @@ pub fn main(&io: &IO) {
       break;
     }
   }
-  io.log(d)
 
   io.println("Part 1: {part1}");
   io.println("Part 2: {part2}");
