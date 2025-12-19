@@ -1,73 +1,89 @@
 
 // use #util::io::{log as _, out as _};
-use #util::io::log as _;
+use #util::io;
 // use #util::io;
-use #root::data::Map;
+use #root::data::{Array, Map};
 
 pub fn main(&io: &IO) {
-  let limit = 1000;
-  // let limit = 10;
-
   let box_ = [];
-  let pairMap = Map::empty;
-  let p = 0;
-  let n = 0;
   while io.read_line() is Some(line) {
     let val_ = line.split(",");
     let x = N64::parse(val_.get(0).assume()).assume();
     let y = N64::parse(val_.get(1).assume()).assume();
     let z = N64::parse(val_.get(2).assume()).assume();
-    let box = (n, x, y, z);
-    for alt in box_ {
-      p += 1
-      let (m, a, b, c) = alt;
-      let dist = a.diff(x) ** 2 + b.diff(y) ** 2 + c.diff(z) ** 2;
-      let target = pairMap.at_or_insert(dist, List::empty[(N32, N32)]);
-      target.* ++= [(m, n)];
-      if p > limit {
-        pairMap.remove_max();
-      }
-    }
-    n += 1;
+    let box = (x, y, z);
     box_ ++= [box];
   }
-  // io.log(box_)
-  // io.log(box_.len())
+  io.log(box_)
+  let box_arr = box_ as Array;
+  let box_count = box_.len();
+  io.log({ box_count })
+  let pair_ = [];
+  let i = 0;
+  while box_.pop_front() is Some(box) {
+    // io.log(box)
+    let (x, y, z) = box;
+    let a = i;
+    let b = i;
+    i += 1;
+    for alt in box_ {
+      b += 1
+      let (p, q, r) = alt;
+      let dist = x.diff(p) ** 2 + y.diff(q) ** 2 + z.diff(r) ** 2;
+      pair_ ++= [BoxPair({ a, b, dist })];
+    }
+  }
+  // io.log(pair_)
+  pair_.sort();
+  // io.log(pair_)
+  // return;
+  // pair_.reverse();
+  // io.log(pair_)
+  // return;
 
+  let part1: N32 = 0;
+  let part2: N64 = 0[N64];
+
+  let checkpoint = if box_count == 20 {
+    10
+  } else {
+    1000
+  };
+
+  io.log({ checkpoint })
   let d = DisjointSet::empty[N32];
-  let pair_ = List::empty[(N32, N32)];
-  for (_, pairs) in pairMap {
-    pair_ ++= pairs;
-  }
+  let n = 0;
   io.log(pair_)
-  // io.log(pair_.len())
-  for (a, b) in pair_ {
-    // d.union_sets(&a, &b)
-    d.union_sets(&a, &b)
+  for BoxPair({ a, b, dist: _ }) in pair_ {
+    io.log({ a, b })
+    n += 1;
+    let s = d.union_sets(&a, &b);
+    io.log({ s });
+    if (n == checkpoint) {
+      io.log("Checkpoint!!!!!!!!!!!")
+      let c_ = d!.size_.values().collect[List, _, _]();
+      c_.sort();
+      c_.reverse();
+      // io.log(c_);
+      // break;
+      assert (c_.pop_front(), c_.pop_front(), c_.pop_front()) is (Some(&a), Some(&b), Some(&c)) else {}
+
+      io.log({ a, b, c })
+
+      let product = a * b * c;
+      io.log({ product });
+
+      part1 = product;
+    }
+    if (s == box_count) {
+      let box_a = box_arr.get(a).assume();
+      let box_b = box_arr.get(b).assume();
+
+      part2 = box_a.0 * box_b.0
+      break;
+    }
   }
-  io.log(d!.parent_)
-
-  // let c = Map::empty[N32, N32];
-  // for (x, _) in d!.parent_ {
-  //   let p = d.find_set(&x);
-  //   let n = c.get(&p).or_use(0);
-  //   c.insert(p, n + 1);
-  // }
-  let c_ = d!.size_.values().collect[List, _, _]();
-  io.log(c_)
-  c_.sort();
-  io.log(c_)
-  c_.reverse();
-  io.log(c_)
-  assert (c_.pop_front(), c_.pop_front(), c_.pop_front()) is (Some(&a), Some(&b), Some(&c)) else {}
-
-  io.log({ a, b, c })
-
-  let product = a * b * c;
-  io.log({ product });
-
-  let part1 = product;
-  let part2 = 0;
+  io.log(d)
 
   io.println("Part 1: {part1}");
   io.println("Part 2: {part2}");
@@ -102,15 +118,37 @@ mod DisjointSet[N*; Ord[N]] {
     }
     self.find_set(&p)
   }
-  pub fn .union_sets[...](&self: &DisjointSet[N], &a: &N, &b: &N) {
+  pub fn .union_sets[... ; Show[N]](&self: &DisjointSet[N], &a: &N, &b: &N) -> N32 {
     let x = self.find_set(&a);
     let y = self.find_set(&b);
-    if !(x.cmp(&y) is Ord::Eq()) {
-      self!.parent_.insert(x, y);
-      let sx = self!.size_.get(&x).assume();
-      let sy = self!.size_.get(&y).assume();
-      self!.size_.insert(y, sy + sx);
-      self!.size_.remove(&x);
+    let sx = self!.size_.get(&x).assume();
+    if x.cmp(&y) is Ord::Eq() {
+      return sx;
+    }
+    let sy = self!.size_.get(&y).assume();
+    let s = sy + sx;
+    { a, b, sx, sy, x, y }.dbg()
+    self!.parent_.insert(x, y);
+    self!.size_.insert(y, s);
+    self!.size_.remove(&x);
+    s
+  }
+  pub impl show[... ; Show[N]]: Show[DisjointSet[N]];
+}
+
+struct* BoxPair({ a: N32, b: N32, dist: N64 });
+mod BoxPair {
+  use #root::ops::comparison::Ord;
+  pub impl ord: Ord[BoxPair] {
+    fn cmp(&a: &BoxPair, &b: &BoxPair) -> Ord {
+      Ord::cmp[N64](&a.dist, &b.dist)
+    }
+    fn lt(&a: &BoxPair, &b: &BoxPair) -> Bool {
+      Ord::lt_from_cmp(&a, &b)
+    }
+    fn le(&a: &BoxPair, &b: &BoxPair) -> Bool {
+      Ord::le_from_cmp(&a, &b)
     }
   }
+  pub impl show: Show[BoxPair];
 }
