@@ -47,29 +47,24 @@ pub fn main(&io: &IO) {
   }
   io.log(d!.parent_)
 
-  let c = Map::empty[N32, N32];
-  for (x, _) in d!.parent_ {
-    let p = d.find_set(&x);
-    let n = c.get(&p).or_use(0);
-    c.insert(p, n + 1);
-  }
-  io.log(c)
-
-  let c_ = [];
-  for (_, c) in c {
-    c_ ++= [c]
-  }
+  // let c = Map::empty[N32, N32];
+  // for (x, _) in d!.parent_ {
+  //   let p = d.find_set(&x);
+  //   let n = c.get(&p).or_use(0);
+  //   c.insert(p, n + 1);
+  // }
+  let c_ = d!.size_.values().collect[List, _, _]();
   io.log(c_)
   c_.sort();
   io.log(c_)
   c_.reverse();
   io.log(c_)
-  assert (c_.pop_front(), c_.pop_front(), c_.pop_front()) is (Some(a), Some(b), Some(c)) else {}
+  assert (c_.pop_front(), c_.pop_front(), c_.pop_front()) is (Some(&a), Some(&b), Some(&c)) else {}
 
   io.log({ a, b, c })
 
   let product = a * b * c;
-  io.log(product);
+  io.log({ product });
 
   let part1 = product;
   let part2 = 0;
@@ -86,12 +81,16 @@ fn .diff(a: N64, b: N64) -> N64 {
   }
 }
 
-struct* DisjointSet[N]({ parent_: Map[N, N] });
+struct* DisjointSet[N]({ parent_: Map[N, N], size_: Map[N, N32] });
 mod DisjointSet[N*; Ord[N]] {
   use #root::ops::comparison::Ord;
-  pub const empty[N]: DisjointSet[N] = DisjointSet({ parent_: Map::empty[N, N] });
+  pub const empty[N]: DisjointSet[N] = DisjointSet({
+    parent_: Map::empty[N, N],
+    size_: Map::empty[N, N32],
+  });
   fn .make_set[...](&self: &DisjointSet[N], n: N) {
     self!.parent_.insert(n, n);
+    self!.size_.insert(n, 1);
   }
   pub fn .find_set[...](&self: &DisjointSet[N], &n: &N) -> N {
     assert self!.parent_.get(&n) is Some(p) else {
@@ -108,6 +107,10 @@ mod DisjointSet[N*; Ord[N]] {
     let y = self.find_set(&b);
     if !(x.cmp(&y) is Ord::Eq()) {
       self!.parent_.insert(x, y);
+      let sx = self!.size_.get(&x).assume();
+      let sy = self!.size_.get(&y).assume();
+      self!.size_.insert(y, sy + sx);
+      self!.size_.remove(&x);
     }
   }
 }
