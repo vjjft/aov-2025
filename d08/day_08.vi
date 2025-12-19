@@ -50,6 +50,7 @@ pub fn main(&io: &IO) {
       let c_ = d!.size_.values().collect[List, _, _]();
       c_.sort();
       c_.reverse();
+      c_.reversed();
       assert (c_.pop_front(), c_.pop_front(), c_.pop_front()) is (Some(&a), Some(&b), Some(&c)) else {}
 
       let product = a * b * c;
