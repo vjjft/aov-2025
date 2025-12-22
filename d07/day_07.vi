@@ -1,0 +1,67 @@
+
+pub use #util::io::{log, out};
+pub use #util::list::{intersect, subtract, union, unique};
+use #root::data::Map;
+
+pub fn main(&io: &IO) {
+  let first_line = io.read_line().assume();
+  let width = first_line.len();
+  let center = width / 2;
+  // let char = first_line!.get(center).assume();
+  // io.log({ width, char })
+  io.read_line()
+  let start = center;
+  let size = 1;
+  let splitter__ = [];
+  while io.read_line() is Some(line) {
+    let (_, scan) = line.split_at(start);
+    let splitter_ = [];
+    for i in 0..size {
+      let char = scan!.pop_front().assume();
+      if (char == '^') {
+        splitter_ ++= [start + i]
+      }
+    }
+    splitter__ ++= [splitter_]
+    // io.out(scan);
+
+    size += 2;
+    start -= 1;
+
+    io.read_line();
+  }
+  // io.log(splitter__)
+
+  let beams = Map::empty;
+  beams.insert(center, 1[N64]);
+  // io.log({ beams })
+
+  let hit_total = 0;
+  for splitter_ in splitter__ {
+    // io.log(splitter_)
+    for splitter in splitter_ {
+      // io.log(beams)
+      assert beams.remove(&splitter) is Some(num) else {
+        continue;
+      }
+      hit_total += 1;
+      // io.log(beams)
+      let x = splitter - 1;
+      let cur = beams.get(&x).or_use(0[N64]);
+      beams.insert(x, num + cur);
+
+      let x = splitter + 1;
+      let cur = beams.get(&x).or_use(0[N64]);
+      beams.insert(x, num + cur);
+      // io.log(beams)
+    }
+    // io.log(beams)
+  }
+  let beam_total = beams.iter().fold(0[N64], fn* (count: N64, (_, num: N64)) { count + num });
+
+  let part1 = hit_total;
+  let part2 = beam_total;
+
+  io.println("Part 1: {part1}");
+  io.println("Part 2: {part2}");
+}

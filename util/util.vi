@@ -1,4 +1,146 @@
 
-pub fn something_helpful(a: N32, b: N32) -> N32 {
-  a + b
+use #root::debug::Show;
+
+pub mod io {
+  pub use log as _;
+  pub fn .log[T?; Show[T]](&io: &IO, item: T) {
+    io.println(item.show() as String)
+  }
+  pub fn .out(&io: &IO, str: String) {
+    io.println(str);
+  }
+  pub fn .ln(&io: &IO) {
+    io.print_char('\n')
+  }
+}
+
+pub mod n32 {
+  pub fn .is_even(n: N32) -> Bool {
+    0 == n % 2
+  }
+
+  pub fn .order(n: N32) -> N32 {
+    n.log(10)
+  }
+
+  pub fn .places(n: N32) -> N32 {
+    n.order() + 1
+  }
+
+  pub fn .has_even_places(n: N32) -> Bool {
+    n.order() % 2 == 1
+  }
+
+  pub fn .digit_char(n: N32) -> Char {
+    when {
+      n > 9 { debug::error("{n} is not a digit") }
+      _ { (n + 48) as Char }
+    }
+  }
+}
+
+pub mod n64 {
+  pub fn .is_even(n: N64) -> Bool {
+    0 == n % 2
+  }
+
+  pub fn .order(n: N64) -> N32 {
+    n.log_n32(10)
+  }
+
+  pub fn .places(n: N64) -> N32 {
+    n.order() + 1
+  }
+
+  pub fn .has_even_places(n: N64) -> Bool {
+    n.order() % 2 == 1
+  }
+}
+
+pub mod string {
+  pub fn .chunk(s: String, n: N32, whole: Bool) -> (List[String], Bool) {
+    assert n > 0 else { debug::error("Chunk size must be non-zero") }
+    let out: List[String] = [];
+    let even: Bool;
+    while s.len() is len and len >= n {
+      let (head, rest) = s.split_at(n);
+      out.push_back(head);
+      s = rest
+    } else {
+      even = s.len() == 0
+      if (!even & !whole) {
+        out.push_back(s)
+      } else {}
+    }
+    return (out, even);
+  }
+}
+
+pub mod list {
+  use #root::ops::comparison::Eq;
+
+  pub fn .is_constant[T+; Eq[T]](&list: &List[T]) -> Result[Option[T], T] {
+    let ref_ = list.iter_ref();
+    assert ref_.advance() is Some(&value, ref_) else { Ok(None()) }
+    for &val in ref_ {
+      if val != value {
+        return Err(val.fork());
+      }
+    } else {
+      Ok(Some(value))
+    }
+  }
+}
+
+pub enum? Stream[M] {
+  More(M, Stream[M]),
+  Done(),
+}
+pub mod Stream {
+  pub impl show[M; Show[M]]: Show[Stream[M]];
+}
+
+pub struct Channel[M]((Stream[M], ~Stream[M]));
+pub mod Channel {
+  pub fn .send[M](&Channel[M](_, ~stream), value: M) {
+    stream = Stream::More(value, stream)
+  }
+
+  pub fn .receive[M](&Channel[M](stream, _)) -> Option[M] {
+    match stream {
+      Stream::Done() {
+        stream = Stream::Done();
+        None()
+      }
+      Stream::More(msg, rest) {
+        stream = rest;
+        Some(msg)
+      }
+    }
+  }
+
+  pub fn .peek[M](&Channel[M](stream, _)) -> Option[&M] {
+    match &stream {
+      &Stream::Done() { None() }
+      &Stream::More(msg, _) { Some(&msg) }
+    }
+  }
+
+  pub fn new_pair[M?]() -> (Channel[M], Channel[M]) {
+    let (a, b);
+    (Channel(~a, ~b), Channel(b, a))
+  }
+
+  pub impl drop[M?]: Drop[Channel[M]] {
+    fn drop(c: Channel[M]) {
+      let Channel(_, ~o) = c;
+      o = Stream::Done();
+    }
+  }
+
+  pub impl show[M; Show[M]]: Show[Channel[M]] {
+    fn show(&c: &Channel[M]) -> Show {
+      Show::Tuple([c.0.show(), Show::Literal("~")])
+    }
+  }
 }

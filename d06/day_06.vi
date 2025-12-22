@@ -1,0 +1,100 @@
+
+use #util::io::{log, out};
+
+pub fn main(&io: &IO) {
+  let input = [];
+  while io.read_line() is Some(line) {
+    input.push_back(line);
+  }
+
+  let part1 = part1(input);
+  io.println("Part 1: {part1}");
+
+  let part2 = part2(input);
+  io.println("Part 2: {part2}");
+}
+fn part2(input: List[String]) -> N64 {
+  let a_ = input.pop_front().assume() ++ " ";
+  let b_ = input.pop_front().assume() ++ " ";
+  let c_ = input.pop_front().assume() ++ " ";
+  let d_ = input.pop_front().assume() ++ " ";
+  let op_ = input.pop_front().assume() ++ " ";
+
+  let problem_op = ' ';
+  let problem_num_: List[N64] = [];
+  let total = 0[N64];
+  while op_!.pop_front() is Some(op) {
+    let a = a_!.pop_front().assume();
+    let b = b_!.pop_front().assume();
+    let c = c_!.pop_front().assume();
+    let d = d_!.pop_front().assume();
+
+    if (op != ' ') {
+      problem_op = op;
+    }
+
+    let str = String([a, b, c, d].filter(fn* (&c: &Char) { c != ' ' }));
+    if (str == "    ") {
+      // debug::log({ problem_op, problem_num_ }.show() as String)
+      let result = if (problem_op == '+') {
+        // debug::log("adding")
+        problem_num_.iter().fold(0[N64], fn* (a: N64, x: N64) { a + x })
+      } else {
+        problem_num_.iter().fold(1[N64], fn* (a: N64, x: N64) { a * x })
+      };
+      // debug::log("= {result}")
+      total += result;
+      problem_num_ = [];
+      continue;
+    }
+    // debug::log("|{str}|")
+    let num = N64::parse(str).assume();
+    problem_num_.push_back(num);
+    // debug::log("{num}")
+  }
+  total
+}
+
+fn part1(input: List[String]) -> N64 {
+  let sheet = [];
+  while input.pop_front() is Some(str) {
+    // let split_ = str.split(" ");
+    // let row_ = split_.filter(fn* (&s: &String) { s != "" });
+
+    let new = "";
+    let last = '\0';
+    for c in str! {
+      if last == ' ' and c == ' ' {
+        continue;
+      }
+      new!.push_back(c)
+      last = c
+    }
+    let row_ = new.split(" ");
+
+    sheet ++= [row_];
+  }
+
+  let a_ = sheet.pop_front().assume();
+  let b_ = sheet.pop_front().assume();
+  let c_ = sheet.pop_front().assume();
+  let d_ = sheet.pop_front().assume();
+  let op_ = sheet.pop_front().assume();
+
+  let total = 0[N64];
+  let problem_ = [];
+  while op_.pop_front() is Some(op) and op!.pop_front() is Some(op) {
+    let a = N64::parse(a_.pop_front().assume()).assume();
+    let b = N64::parse(b_.pop_front().assume()).assume();
+    let c = N64::parse(c_.pop_front().assume()).assume();
+    let d = N64::parse(d_.pop_front().assume()).assume();
+    let result: N64 = if (op == '+') {
+      a + b + c + d
+    } else {
+      a * b * c * d
+    };
+    total += result;
+    problem_ ++= [(a, b, c, op, result)];
+  }
+  total
+}
